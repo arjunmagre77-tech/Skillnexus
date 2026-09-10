@@ -20,7 +20,7 @@ interface HeaderProps {
 export default function DashboardHeader({ 
   title = "Welcome back", 
   subtitle = "Here is your skill intelligence overview",
-  user = { name: "Arjun Magre", email: "arjun@skillnexus.com", role: "Student • Pune" }
+  user = { name: "Arjun Magre", email: "arjun@skilllink.com", role: "Student • Pune" }
 }: HeaderProps) {
   const [showNotifications, setShowNotifications] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
@@ -106,7 +106,7 @@ export default function DashboardHeader({
             <div className="absolute right-0 mt-2 w-56 bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl p-2 z-50 animate-in fade-in slide-in-from-top-2 text-xs">
               <div className="px-3 py-2 border-b border-slate-800 mb-1">
                 <p className="font-bold text-white">Arjun Magre</p>
-                <p className="text-[11px] text-slate-400">arjun@skillnexus.com</p>
+                <p className="text-[11px] text-slate-400">arjun@skilllink.com</p>
               </div>
               <Link href="/dashboard/student/profile" className="flex items-center gap-2 px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition">
                 <User className="w-3.5 h-3.5 text-cyan-400" />

@@ -78,14 +78,15 @@ export default function DashboardSidebar({ role = "STUDENT", user }: SidebarProp
       <div>
         {/* Brand */}
         <Link href="/" className="flex items-center gap-3 px-2 py-2 mb-4 group">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500 via-blue-600 to-indigo-600 flex items-center justify-center text-white font-extrabold text-2xl shadow-lg shadow-cyan-500/20 group-hover:scale-105 transition-transform">
-            <svg className="w-6 h-6 text-cyan-200 fill-current" viewBox="0 0 24 24">
-              <path d="M18.6 6.62c-1.44 0-2.8.56-3.77 1.53L12 10.96 9.17 8.15C8.2 7.18 6.84 6.62 5.4 6.62 2.42 6.62 0 9.04 0 12.02c0 2.98 2.42 5.4 5.4 5.4 1.44 0 2.8-.56 3.77-1.53L12 13.08l2.83 2.81c.97.97 2.33 1.53 3.77 1.53 2.98 0 5.4-2.42 5.4-5.4 0-2.98-2.42-5.4-5.4-5.4zm-13.2 9c-1.98 0-3.6-1.62-3.6-3.6 0-1.98 1.62-3.6 3.6-3.6 1.01 0 1.97.41 2.65 1.09l1.83 1.83-1.83 1.83C7.37 15.21 6.41 15.62 5.4 15.62zm13.2 0c-1.01 0-1.97-.41-2.65-1.09L14.12 12.7l1.83-1.83c.68-.68 1.64-1.09 2.65-1.09 1.98 0 3.6 1.62 3.6 3.6 0 1.98-1.62 3.6-3.6 3.6z"/>
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500 via-blue-600 to-indigo-600 flex items-center justify-center text-white font-extrabold shadow-lg shadow-cyan-500/20 group-hover:scale-105 transition-transform">
+            <svg className="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+              <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
             </svg>
           </div>
           <div>
-            <div className="font-extrabold text-lg text-white tracking-tight leading-none flex items-center gap-1.5">
-              SkillNexus
+            <div className="font-extrabold text-lg text-white tracking-tight leading-none flex items-center gap-0.5">
+              Skill<span className="text-cyan-400">Link</span>
             </div>
             <p className="text-[11px] text-slate-400 mt-1 font-medium">Learn • Build • Grow</p>
           </div>
@@ -135,7 +136,7 @@ export default function DashboardSidebar({ role = "STUDENT", user }: SidebarProp
           
           <div className="relative z-10 space-y-1">
             <h4 className="text-xs font-extrabold text-white leading-snug drop-shadow-md">
-              Build Your Future with <span className="text-cyan-400">SkillNexus</span>
+              Build Your Future with <span className="text-cyan-400">SkillLink</span>
             </h4>
             <p className="text-[10px] text-slate-300 font-medium">Learn • Build • Grow</p>
           </div>

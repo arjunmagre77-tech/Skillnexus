@@ -2,12 +2,12 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "SkillNexus — AI-Powered Academia–Industry Collaboration Platform",
-  description: "Bridge the gap between campus skills and industry careers. SkillNexus uses AI to map skills, identify gaps, build personalized roadmaps, and connect students with internships.",
-  keywords: "skill mapping, internship, placement readiness, career guidance, AI, academia industry",
+  title: "SkillLink — AI-Powered Skill Intelligence Platform",
+  description: "Bridge the gap between campus skills and industry careers. SkillLink uses AI to map skills, identify gaps, build personalized roadmaps, and connect students with internships.",
+  keywords: "skill mapping, internship, placement readiness, career guidance, AI, academia industry, SkillLink",
   openGraph: {
-    title: "SkillNexus",
-    description: "AI-Powered Academia–Industry Collaboration Platform",
+    title: "SkillLink",
+    description: "AI-Powered Skill Intelligence Platform",
     type: "website",
   },
 };

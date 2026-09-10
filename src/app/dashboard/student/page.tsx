@@ -121,7 +121,7 @@ export default function StudentDashboardPage() {
     { id: 2, icon: Code, iconBg: "bg-blue-500/20 text-blue-400", title: 'Started "Web Development" course', time: "5 hours ago" },
     { id: 3, icon: FileText, iconBg: "bg-cyan-500/20 text-cyan-400", title: "Applied to AI Systems Engineering Intern", time: "6 hours ago" },
     { id: 4, icon: Star, iconBg: "bg-purple-500/20 text-purple-400", title: "Reached 80% in TypeScript & Node.js", time: "1 day ago" },
-    { id: 5, icon: Users, iconBg: "bg-emerald-500/20 text-emerald-400", title: "Joined SkillNexus community", time: "2 days ago" },
+    { id: 5, icon: Users, iconBg: "bg-emerald-500/20 text-emerald-400", title: "Joined SkillLink community", time: "2 days ago" },
   ];
 
   return (

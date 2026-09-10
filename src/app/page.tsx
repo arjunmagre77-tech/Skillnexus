@@ -25,9 +25,9 @@ const features = [
 ];
 
 const testimonials = [
-  { name: "Priya Nair", role: "Student, NITK", img: "PN", quote: "SkillNexus showed me exactly which skills I was missing for Data Science roles. Got my first internship at DataWorks in 3 months!", rating: 5, color: "#00D4FF" },
+  { name: "Priya Nair", role: "Student, NITK", img: "PN", quote: "SkillLink showed me exactly which skills I was missing for Data Science roles. Got my first internship at DataWorks in 3 months!", rating: 5, color: "#00D4FF" },
   { name: "Dr. Ramesh Kumar", role: "Placement Officer, IIT Bombay", img: "RK", quote: "The department-wise skill gap heatmap is incredible. We can now target training programs where students need it most.", rating: 5, color: "#8B5CF6" },
-  { name: "Anika Shah", role: "HR Lead, TechCorp India", img: "AS", quote: "We find much better candidates through SkillNexus talent search than traditional resume screening. Verified skills actually mean something.", rating: 5, color: "#10B981" },
+  { name: "Anika Shah", role: "HR Lead, TechCorp India", img: "AS", quote: "We find much better candidates through SkillLink talent search than traditional resume screening. Verified skills actually mean something.", rating: 5, color: "#10B981" },
 ];
 
 const pricingPlans = [
@@ -44,11 +44,11 @@ const pricingPlans = [
 ];
 
 const faqs = [
-  { q: "How does the Skill Gap Analysis work?", a: "SkillNexus compares your self-declared and assessed skills against the requirements of real job postings and internships you're targeting, then generates a prioritized gap report with recommended actions." },
+  { q: "How does the Skill Gap Analysis work?", a: "SkillLink compares your self-declared and assessed skills against the requirements of real job postings and internships you're targeting, then generates a prioritized gap report with recommended actions." },
   { q: "What is the Placement Readiness Score?", a: "It's a composite score out of 100 calculated across 7 dimensions: Technical Skills, Projects, Internships, Communication, Problem Solving, Resume Quality, and Interview Readiness." },
   { q: "Can I use NexaPoints to pay for Premium?", a: "Yes! NexaPoints can reduce your Premium cost. 500 points = ₹50 off, 1000 points = ₹100 off, and 2000 points = free Premium for one month. Points have no cash value." },
   { q: "How are skills verified?", a: "Skills go through 3 verification levels: Self-Declared (you claim it), Assessed (you pass our platform test), and Industry-Verified (a company or mentor confirms it from real work)." },
-  { q: "Is SkillNexus free for colleges?", a: "Yes! College admin dashboards including skill analytics, department heatmaps, and placement tracking are completely free. Enterprise plans are available for advanced features." },
+  { q: "Is SkillLink free for colleges?", a: "Yes! College admin dashboards including skill analytics, department heatmaps, and placement tracking are completely free. Enterprise plans are available for advanced features." },
 ];
 
 function CountUp({ target, suffix = "" }: { target: number; suffix?: string }) {
@@ -98,10 +98,13 @@ export default function LandingPage() {
       }}>
         <div style={{ maxWidth: 1200, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", height: 64 }}>
           <Link href="/" style={{ display: "flex", alignItems: "center", gap: "0.5rem", textDecoration: "none" }}>
-            <div style={{ width: 32, height: 32, background: "var(--gradient-accent)", borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <Zap size={18} color="#0A1628" strokeWidth={2.5} />
+            <div style={{ width: 32, height: 32, background: "linear-gradient(135deg, #00D4FF 0%, #8B5CF6 100%)", borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A1628" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+              </svg>
             </div>
-            <span style={{ fontSize: "1.1rem", fontWeight: 700, fontFamily: "'Space Grotesk', sans-serif", color: "var(--text)" }}>SkillNexus</span>
+            <span style={{ fontSize: "1.1rem", fontWeight: 800, fontFamily: "'Space Grotesk', sans-serif", color: "var(--text)" }}>Skill<span style={{ color: "#00D4FF" }}>Link</span></span>
           </Link>
 
           <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "2rem" }} className="desktop-nav">
@@ -142,7 +145,7 @@ export default function LandingPage() {
             </h1>
 
             <p style={{ fontSize: "clamp(1rem, 2vw, 1.25rem)", color: "var(--text-muted)", maxWidth: 680, margin: "0 auto 2.5rem", lineHeight: 1.7 }}>
-              SkillNexus uses AI to map your skills, identify industry gaps, build personalized career paths, connect you with real internships, and help you become placement-ready.
+              SkillLink uses AI to map your skills, identify industry gaps, build personalized career paths, connect you with real internships, and help you become placement-ready.
             </p>
 
             <div style={{ display: "flex", gap: "1rem", justifyContent: "center", flexWrap: "wrap", marginBottom: "3rem" }}>
@@ -356,7 +359,7 @@ export default function LandingPage() {
                 <span className="text-gradient">Winning</span>
               </h2>
               <p style={{ color: "var(--text-muted)", lineHeight: 1.7, marginBottom: "2rem" }}>
-                Career growth shouldn't feel like a chore. SkillNexus rewards meaningful learning activity with NexaPoints, streaks, and badges — not just logging in.
+                Career growth shouldn't feel like a chore. SkillLink rewards meaningful learning activity with NexaPoints, streaks, and badges — not just logging in.
               </p>
               {[
                 { icon: "🔥", title: "Daily Streaks", desc: "Maintain your streak by completing real learning tasks" },
@@ -507,7 +510,7 @@ export default function LandingPage() {
               <span className="text-gradient">Right Now</span>
             </h2>
             <p style={{ color: "var(--text-muted)", maxWidth: 500, margin: "0 auto 2rem", lineHeight: 1.7 }}>
-              Join 50,000+ students already using SkillNexus to become placement-ready and land their dream internships.
+              Join 50,000+ students already using SkillLink to become placement-ready and land their dream internships.
             </p>
             <div style={{ display: "flex", gap: "1rem", justifyContent: "center", flexWrap: "wrap" }}>
               <Link href="/register" className="btn btn-primary btn-lg">
@@ -535,7 +538,7 @@ export default function LandingPage() {
                 <div style={{ width: 28, height: 28, background: "var(--gradient-accent)", borderRadius: 7, display: "flex", alignItems: "center", justifyContent: "center" }}>
                   <Zap size={15} color="#0A1628" />
                 </div>
-                <span style={{ fontWeight: 700, fontFamily: "'Space Grotesk',sans-serif" }}>SkillNexus</span>
+                <span style={{ fontWeight: 800, fontFamily: "'Space Grotesk',sans-serif" }}>Skill<span style={{ color: "#00D4FF" }}>Link</span></span>
               </div>
               <p style={{ color: "var(--text-muted)", fontSize: "0.875rem", lineHeight: 1.7, maxWidth: 280 }}>
                 AI-powered Academia–Industry Collaboration Platform bridging the gap between campus skills and industry careers.
@@ -564,7 +567,7 @@ export default function LandingPage() {
             ))}
           </div>
           <div style={{ borderTop: "1px solid var(--card-border)", paddingTop: "1.5rem", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "0.5rem" }}>
-            <span style={{ color: "var(--text-subtle)", fontSize: "0.8rem" }}>© 2024 SkillNexus. All rights reserved.</span>
+            <span style={{ color: "var(--text-subtle)", fontSize: "0.8rem" }}>© 2026 SkillLink Platform Inc. All rights reserved.</span>
             <div style={{ display: "flex", gap: "1.5rem" }}>
               {["Privacy Policy", "Terms of Service", "Cookie Policy"].map(l => (
                 <Link key={l} href="#" style={{ color: "var(--text-subtle)", fontSize: "0.8rem", textDecoration: "none" }}>{l}</Link>

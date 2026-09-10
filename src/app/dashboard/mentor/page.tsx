@@ -63,7 +63,7 @@ export default function MentorDashboardPage() {
             <div className="p-5 rounded-2xl bg-slate-900 border border-slate-800">
               <div className="text-xs text-cyan-400 font-bold uppercase">Total Mentees</div>
               <div className="text-3xl font-black text-white mt-2">{mentorData.totalMentees}</div>
-              <p className="text-xs text-slate-400 mt-1">Guided through SkillNexus</p>
+              <p className="text-xs text-slate-400 mt-1">Guided through SkillLink</p>
             </div>
 
             <div className="p-5 rounded-2xl bg-slate-900 border border-slate-800">
