@@ -46,41 +46,49 @@ export default function CollegeDashboardPage() {
         <main className="p-6 space-y-6 overflow-y-auto">
           {/* Stats Bar */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div className="p-5 rounded-2xl bg-gradient-to-br from-indigo-950/60 via-slate-900 to-slate-900 border border-indigo-500/30">
+            <Link href="/dashboard/college/analytics" className="p-5 rounded-2xl bg-gradient-to-br from-indigo-950/60 via-slate-900 to-slate-900 border border-indigo-500/30 hover:border-indigo-400 transition group">
               <div className="flex items-center justify-between text-xs text-indigo-400 font-bold uppercase">
                 <span>Placement Readiness</span>
-                <ShieldCheck className="w-4 h-4" />
+                <ShieldCheck className="w-4 h-4 group-hover:scale-110 transition-transform" />
               </div>
               <div className="text-3xl font-black text-white mt-3">{collegeData.institutionalReadiness}%</div>
-              <p className="text-xs text-slate-400 mt-1">Institutional Skill Alignment Score</p>
-            </div>
+              <p className="text-xs text-slate-400 mt-1 flex items-center gap-1">
+                Institutional Skill Matrix <ArrowRight className="w-3 h-3 text-indigo-400" />
+              </p>
+            </Link>
 
-            <div className="p-5 rounded-2xl bg-gradient-to-br from-cyan-950/60 via-slate-900 to-slate-900 border border-cyan-500/30">
+            <Link href="/dashboard/college/students" className="p-5 rounded-2xl bg-gradient-to-br from-cyan-950/60 via-slate-900 to-slate-900 border border-cyan-500/30 hover:border-cyan-400 transition group">
               <div className="flex items-center justify-between text-xs text-cyan-400 font-bold uppercase">
                 <span>Total Tracked Students</span>
-                <Users className="w-4 h-4" />
+                <Users className="w-4 h-4 group-hover:scale-110 transition-transform" />
               </div>
               <div className="text-3xl font-black text-white mt-3">{collegeData.totalStudents}</div>
-              <p className="text-xs text-slate-400 mt-1">Active verified skill profiles</p>
-            </div>
+              <p className="text-xs text-slate-400 mt-1 flex items-center gap-1">
+                View Student Roster <ArrowRight className="w-3 h-3 text-cyan-400" />
+              </p>
+            </Link>
 
-            <div className="p-5 rounded-2xl bg-gradient-to-br from-emerald-950/60 via-slate-900 to-slate-900 border border-emerald-500/30">
+            <Link href="/dashboard/college/placements" className="p-5 rounded-2xl bg-gradient-to-br from-emerald-950/60 via-slate-900 to-slate-900 border border-emerald-500/30 hover:border-emerald-400 transition group">
               <div className="flex items-center justify-between text-xs text-emerald-400 font-bold uppercase">
                 <span>Placement Rate</span>
-                <TrendingUp className="w-4 h-4" />
+                <TrendingUp className="w-4 h-4 group-hover:scale-110 transition-transform" />
               </div>
               <div className="text-3xl font-black text-white mt-3">{collegeData.placementRate}%</div>
-              <p className="text-xs text-slate-400 mt-1">Avg package: {collegeData.avgPackage}</p>
-            </div>
+              <p className="text-xs text-slate-400 mt-1 flex items-center gap-1">
+                View Placement Tracker <ArrowRight className="w-3 h-3 text-emerald-400" />
+              </p>
+            </Link>
 
-            <div className="p-5 rounded-2xl bg-gradient-to-br from-purple-950/60 via-slate-900 to-slate-900 border border-purple-500/30">
+            <Link href="/dashboard/college/partners" className="p-5 rounded-2xl bg-gradient-to-br from-purple-950/60 via-slate-900 to-slate-900 border border-purple-500/30 hover:border-purple-400 transition group">
               <div className="flex items-center justify-between text-xs text-purple-400 font-bold uppercase">
                 <span>Hiring Partners</span>
-                <Building2 className="w-4 h-4" />
+                <Building2 className="w-4 h-4 group-hover:scale-110 transition-transform" />
               </div>
               <div className="text-3xl font-black text-white mt-3">150+</div>
-              <p className="text-xs text-slate-400 mt-1">Active corporate recruiters</p>
-            </div>
+              <p className="text-xs text-slate-400 mt-1 flex items-center gap-1">
+                View Partner Directory <ArrowRight className="w-3 h-3 text-purple-400" />
+              </p>
+            </Link>
           </div>
 
           {/* Department Readiness Heatmap */}
@@ -94,7 +102,7 @@ export default function CollegeDashboardPage() {
                 <p className="text-xs text-slate-400">Institutional comparison of curriculum alignment across engineering branches.</p>
               </div>
               <Link href="/dashboard/college/analytics" className="text-xs text-cyan-400 hover:underline font-semibold flex items-center gap-1">
-                Full Analytics Radar <ArrowRight className="w-3.5 h-3.5" />
+                Full Analytics Heatmap Matrix <ArrowRight className="w-3.5 h-3.5" />
               </Link>
             </div>
 
@@ -130,13 +138,18 @@ export default function CollegeDashboardPage() {
             </div>
           </div>
 
-          {/* Hiring Partners & Placement Tracker */}
+          {/* Hiring Partners & Placement Tracker Preview */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="p-6 rounded-3xl bg-slate-900/90 border border-slate-800 space-y-4">
-              <h3 className="text-base font-bold text-white flex items-center gap-2">
-                <Building2 className="w-5 h-5 text-cyan-400" />
-                Top Campus Recruiters & Offer Count
-              </h3>
+              <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+                <h3 className="text-base font-bold text-white flex items-center gap-2">
+                  <Building2 className="w-5 h-5 text-cyan-400" />
+                  Top Campus Recruiters & Offer Count
+                </h3>
+                <Link href="/dashboard/college/partners" className="text-xs text-cyan-400 hover:underline font-semibold flex items-center gap-1">
+                  View All Partners <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+              </div>
               <div className="space-y-3">
                 {hiringPartners.map((p) => (
                   <div key={p.name} className="p-3.5 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-between text-xs">
@@ -164,13 +177,13 @@ export default function CollegeDashboardPage() {
               </div>
 
               <div className="space-y-2 pt-4">
-                <button 
-                  onClick={() => alert("Curriculum Gap Audit PDF Report generated for Academic Council!")}
+                <Link 
+                  href="/dashboard/college/analytics"
                   className="w-full py-3 rounded-xl bg-indigo-500 hover:bg-indigo-400 text-white font-bold text-xs transition flex items-center justify-center gap-2"
                 >
                   <Download className="w-4 h-4" />
-                  <span>Download Academic Council Curriculum Report</span>
-                </button>
+                  <span>View Full Curriculum Gap Analytics Report</span>
+                </Link>
               </div>
             </div>
           </div>
