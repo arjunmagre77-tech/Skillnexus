@@ -10,6 +10,15 @@ import {
 } from "lucide-react";
 
 export default function StudentDashboardPage() {
+  const [appliedJobIds, setAppliedJobIds] = React.useState<number[]>([]);
+
+  const handleQuickApply = (id: number, role: string, company: string) => {
+    if (!appliedJobIds.includes(id)) {
+      setAppliedJobIds((prev) => [...prev, id]);
+      alert(`Application submitted to ${company} for ${role} with your Verified Skill Vector!`);
+    }
+  };
+
   const studentData = {
     name: "Arjun",
     fullName: "Arjun Magre",
@@ -19,7 +28,7 @@ export default function StudentDashboardPage() {
     streakDays: 5,
     verifiedBadges: 14,
     level: "Level 4",
-    applicationsCount: 6,
+    applicationsCount: 6 + appliedJobIds.length,
     overallProgress: 78,
   };
 
@@ -246,7 +255,10 @@ export default function StudentDashboardPage() {
             </div>
 
             {/* Card 4: Applications */}
-            <div className="p-4 rounded-2xl bg-[#091022] border border-blue-900/60 shadow-lg flex items-center justify-between">
+            <Link 
+              href="/dashboard/student/applications" 
+              className="p-4 rounded-2xl bg-[#091022] border border-blue-900/60 shadow-lg flex items-center justify-between hover:border-cyan-500/50 transition group"
+            >
               <div className="space-y-1">
                 <span className="text-xs font-semibold text-slate-400">Applications</span>
                 <div className="flex items-baseline gap-2">
@@ -254,10 +266,10 @@ export default function StudentDashboardPage() {
                   <span className="text-[11px] text-slate-400 font-medium">In progress</span>
                 </div>
               </div>
-              <div className="w-9 h-9 rounded-full bg-blue-600/20 text-blue-400 flex items-center justify-center hover:bg-blue-600/40 cursor-pointer transition">
-                <ChevronRight className="w-5 h-5 text-cyan-400" />
+              <div className="w-9 h-9 rounded-full bg-blue-600/20 text-blue-400 flex items-center justify-center group-hover:bg-blue-600/40 transition">
+                <ChevronRight className="w-5 h-5 text-cyan-400 group-hover:translate-x-0.5 transition-transform" />
               </div>
-            </div>
+            </Link>
           </div>
 
           {/* Main 2-Column Dashboard Grid */}
@@ -358,57 +370,69 @@ export default function StudentDashboardPage() {
                       Real opportunities from companies looking for candidates with your verified skill profile.
                     </p>
                   </div>
-                  <Link href="/dashboard/student/internships" className="text-xs text-cyan-400 hover:underline font-bold flex items-center gap-1">
+                  <Link href="/dashboard/student/jobs" className="text-xs text-cyan-400 hover:underline font-bold flex items-center gap-1">
                     View All
                   </Link>
                 </div>
 
                 {/* 4 Job Cards Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {jobMatches.map((job) => (
-                    <div key={job.id} className="p-4 rounded-2xl bg-[#0d162d] border border-slate-800/80 hover:border-cyan-500/50 transition-all flex flex-col justify-between space-y-4 group">
-                      <div className="space-y-3">
-                        <div className="flex items-start justify-between">
-                          <div className="flex items-center gap-2.5">
-                            <div className="w-9 h-9 rounded-xl bg-slate-800 flex items-center justify-center text-lg shadow-inner">
-                              {job.logo}
+                  {jobMatches.map((job) => {
+                    const isApplied = appliedJobIds.includes(job.id);
+                    return (
+                      <div key={job.id} className="p-4 rounded-2xl bg-[#0d162d] border border-slate-800/80 hover:border-cyan-500/50 transition-all flex flex-col justify-between space-y-4 group">
+                        <div className="space-y-3">
+                          <div className="flex items-start justify-between">
+                            <div className="flex items-center gap-2.5">
+                              <div className="w-9 h-9 rounded-xl bg-slate-800 flex items-center justify-center text-lg shadow-inner">
+                                {job.logo}
+                              </div>
+                              <div>
+                                <h4 className="text-xs font-bold text-white group-hover:text-cyan-300 transition">
+                                  {job.role}
+                                </h4>
+                                <p className="text-[11px] text-slate-400">{job.company}</p>
+                              </div>
                             </div>
-                            <div>
-                              <h4 className="text-xs font-bold text-white group-hover:text-cyan-300 transition">
-                                {job.role}
-                              </h4>
-                              <p className="text-[11px] text-slate-400">{job.company}</p>
-                            </div>
-                          </div>
-                          <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
-                            {job.matchScore}% Match
-                          </span>
-                        </div>
-
-                        <div className="text-[11px] text-slate-300 space-y-1">
-                          <p>💵 <strong className="text-white">{job.salary}</strong></p>
-                          <p>📍 {job.location}</p>
-                        </div>
-
-                        {/* Skill Pills */}
-                        <div className="flex flex-wrap gap-1 pt-1">
-                          {job.skills.map((sk) => (
-                            <span key={sk} className="text-[9px] font-semibold px-2 py-0.5 rounded bg-blue-600/20 text-cyan-300 border border-blue-500/30">
-                              {sk}
+                            <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                              {job.matchScore}% Match
                             </span>
-                          ))}
-                          <span className="text-[9px] font-semibold px-2 py-0.5 rounded bg-rose-500/10 text-rose-400 border border-rose-500/20">
-                            Missing: {job.missing}
-                          </span>
-                        </div>
-                      </div>
+                          </div>
 
-                      <button className="w-full py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs transition flex items-center justify-center gap-1.5 shadow-md">
-                        <span>Quick Apply</span>
-                        <ArrowRight className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-                  ))}
+                          <div className="text-[11px] text-slate-300 space-y-1">
+                            <p>💵 <strong className="text-white">{job.salary}</strong></p>
+                            <p>📍 {job.location}</p>
+                          </div>
+
+                          {/* Skill Pills */}
+                          <div className="flex flex-wrap gap-1 pt-1">
+                            {job.skills.map((sk) => (
+                              <span key={sk} className="text-[9px] font-semibold px-2 py-0.5 rounded bg-blue-600/20 text-cyan-300 border border-blue-500/30">
+                                {sk}
+                              </span>
+                            ))}
+                            <span className="text-[9px] font-semibold px-2 py-0.5 rounded bg-rose-500/10 text-rose-400 border border-rose-500/20">
+                              Missing: {job.missing}
+                            </span>
+                          </div>
+                        </div>
+
+                        {isApplied ? (
+                          <button disabled className="w-full py-2 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-bold text-xs cursor-default">
+                            ✓ Applied
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => handleQuickApply(job.id, job.role, job.company)}
+                            className="w-full py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs transition flex items-center justify-center gap-1.5 shadow-md"
+                          >
+                            <span>Quick Apply</span>
+                            <ArrowRight className="w-3.5 h-3.5" />
+                          </button>
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
 
