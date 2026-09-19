@@ -1,206 +1,195 @@
 "use client";
-import { useState } from "react";
-import Link from "next/link";
+import { useState, useEffect, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import DashboardSidebar from "@/components/dashboard/Sidebar";
 import DashboardHeader from "@/components/dashboard/Header";
+import RecruiterHubView from "@/components/dashboard/company/RecruiterHubView";
+import TalentDiscoveryView from "@/components/dashboard/company/TalentDiscoveryView";
+import PostOpportunityView from "@/components/dashboard/company/PostOpportunityView";
+import ApplicantsPipelineView from "@/components/dashboard/company/ApplicantsPipelineView";
+import IndustryProjectsView from "@/components/dashboard/company/IndustryProjectsView";
+import CandidateBreakdownModal from "@/components/dashboard/company/CandidateBreakdownModal";
+import PostOpportunityModal from "@/components/dashboard/company/PostOpportunityModal";
+import SponsorChallengeModal from "@/components/dashboard/company/SponsorChallengeModal";
 import { 
-  Building2, Users, Search, PlusCircle, Target, 
-  CheckCircle2, Sparkles, ArrowRight, Briefcase
-} from "lucide-react";
+  INITIAL_CANDIDATES, 
+  INITIAL_OPPORTUNITIES, 
+  INITIAL_CHALLENGES, 
+  Candidate, 
+  OpportunityListing, 
+  IndustryChallenge 
+} from "@/components/dashboard/company/data";
+import { CheckCircle2 } from "lucide-react";
 
-export default function CompanyDashboardPage() {
-  const companyData = {
-    name: "OpenAI Labs Recruiter Hub",
-    activePostings: 4,
-    totalApplicants: 184,
-    verifiedMatches: 32,
-    hiredCount: 6,
+function CompanyDashboardContent() {
+  const searchParams = useSearchParams();
+  const tabParam = searchParams.get("tab");
+  const filterParam = searchParams.get("filter") || "ALL";
+
+  const [activeTab, setActiveTab] = useState<string>("recruiter-hub");
+  const [pipelineRoleFilter, setPipelineRoleFilter] = useState<string>("ALL");
+
+  // Main state
+  const [candidates, setCandidates] = useState<Candidate[]>(INITIAL_CANDIDATES);
+  const [opportunities, setOpportunities] = useState<OpportunityListing[]>(INITIAL_OPPORTUNITIES);
+  const [challenges, setChallenges] = useState<IndustryChallenge[]>(INITIAL_CHALLENGES);
+
+  // Modals & toast
+  const [selectedCandidate, setSelectedCandidate] = useState<Candidate | null>(null);
+  const [isPostModalOpen, setIsPostModalOpen] = useState(false);
+  const [isSponsorModalOpen, setIsSponsorModalOpen] = useState(false);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (tabParam) {
+      setActiveTab(tabParam);
+    }
+    if (filterParam && filterParam !== "ALL") {
+      setPipelineRoleFilter(filterParam);
+    }
+  }, [tabParam, filterParam]);
+
+  const showToast = (msg: string) => {
+    setToastMessage(msg);
+    setTimeout(() => {
+      setToastMessage(null);
+    }, 3500);
   };
 
-  const activePostings = [
-    {
-      id: "int_1",
-      role: "AI Systems Engineering Intern",
-      type: "Internship",
-      applicants: 142,
-      topMatchScore: "94%",
-      status: "Active",
-      skills: ["Python", "PyTorch", "Next.js", "Vector DBs"]
-    },
-    {
-      id: "job_1",
-      role: "Full Stack Engineer (New Grad 2026)",
-      type: "Full-Time Job",
-      applicants: 42,
-      topMatchScore: "96%",
-      status: "Active",
-      skills: ["TypeScript", "Next.js", "System Design"]
+  const handleNavigateTab = (tab: string, filter?: string) => {
+    setActiveTab(tab);
+    if (filter) {
+      setPipelineRoleFilter(filter);
+    } else {
+      setPipelineRoleFilter("ALL");
     }
-  ];
+    window.history.pushState(null, "", `/dashboard/company?tab=${tab}${filter ? `&filter=${encodeURIComponent(filter)}` : ""}`);
+  };
 
-  const topCandidates = [
-    {
-      name: "Aarav Sharma",
-      college: "IIT Bombay",
-      talentIQ: 780,
-      matchScore: 94,
-      skills: ["React", "PyTorch", "TypeScript", "SQL"],
-      status: "Verified Top Candidate"
-    },
-    {
-      name: "Ananya Patel",
-      college: "BITS Pilani",
-      talentIQ: 810,
-      matchScore: 92,
-      skills: ["Python", "Vector DBs", "Docker", "System Design"],
-      status: "Verified Top Candidate"
-    }
-  ];
+  const handleUpdateCandidateStage = (candidateId: string, newStage: Candidate["recruitmentStage"]) => {
+    setCandidates((prev) =>
+      prev.map((c) => (c.id === candidateId ? { ...c, recruitmentStage: newStage } : c))
+    );
+    showToast(`Updated candidate recruitment stage to "${newStage}"`);
+  };
+
+  const handleAddOpportunity = (newOpp: OpportunityListing) => {
+    setOpportunities((prev) => [newOpp, ...prev]);
+    showToast(`Successfully published opportunity: ${newOpp.role}`);
+  };
+
+  const handleDeleteOpportunity = (id: string) => {
+    setOpportunities((prev) => prev.filter((o) => o.id !== id));
+    showToast("Opportunity removed");
+  };
+
+  const handleAddChallenge = (newChal: IndustryChallenge) => {
+    setChallenges((prev) => [newChal, ...prev]);
+    showToast(`Successfully sponsored challenge: ${newChal.title}`);
+  };
+
+  const handleInviteCandidate = (name: string) => {
+    showToast(`Invitation sent to ${name} for interview screening!`);
+  };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex">
-      <DashboardSidebar role="COMPANY" />
+    <div className="min-h-screen bg-[#040a14] text-slate-100 flex">
+      {/* Sidebar with exact 5 links and activeTab state */}
+      <DashboardSidebar
+        role="COMPANY"
+        activeTab={activeTab}
+        onSelectTab={(tabId) => handleNavigateTab(tabId)}
+      />
 
-      <div className="flex-1 flex flex-col min-w-0">
-        <DashboardHeader 
-          title="Recruiter Intelligence Hub" 
-          subtitle={`${companyData.name} — Direct Talent Discovery powered by Verified Skill Vectors`}
-        />
+      <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
+        {/* Top Header */}
+        <DashboardHeader />
 
-        <main className="p-6 space-y-6 overflow-y-auto">
-          {/* Top Actions & Quick Stats */}
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4 p-6 rounded-3xl bg-slate-900/90 border border-slate-800 backdrop-blur-xl">
-            <div>
-              <span className="text-xs font-bold uppercase tracking-wider text-emerald-400">Recruiter Portal</span>
-              <h2 className="text-xl font-extrabold text-white">Source Verified Talent Without Resume Spam</h2>
-              <p className="text-xs text-slate-400 mt-0.5">Rank candidates based on proven, automated coding assessment vectors.</p>
-            </div>
+        {/* Main Content Area */}
+        <main className="flex-1 p-6 overflow-y-auto bg-[#040a14]">
+          <div className="max-w-7xl mx-auto space-y-6">
+            {activeTab === "recruiter-hub" && (
+              <RecruiterHubView
+                candidates={candidates}
+                opportunities={opportunities}
+                onNavigateTab={handleNavigateTab}
+                onOpenPostModal={() => setIsPostModalOpen(true)}
+                onSelectCandidate={(c) => setSelectedCandidate(c)}
+              />
+            )}
 
-            <div className="flex items-center gap-3">
-              <Link
-                href="/dashboard/company/postings"
-                className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-indigo-600 text-slate-950 font-bold text-xs hover:opacity-90 transition flex items-center gap-2 shadow-lg shadow-cyan-500/20"
-              >
-                <PlusCircle className="w-4 h-4" />
-                <span>Post New Opportunity</span>
-              </Link>
-            </div>
-          </div>
+            {activeTab === "talent-discovery" && (
+              <TalentDiscoveryView
+                candidates={candidates}
+                onSelectCandidate={(c) => setSelectedCandidate(c)}
+                onInvite={handleInviteCandidate}
+              />
+            )}
 
-          {/* Stats Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div className="p-5 rounded-2xl bg-slate-900 border border-slate-800">
-              <div className="text-xs text-slate-400 font-bold uppercase">Active Postings</div>
-              <div className="text-3xl font-black text-white mt-2">{companyData.activePostings}</div>
-              <p className="text-xs text-slate-400 mt-1">Internships & Jobs</p>
-            </div>
+            {activeTab === "post-opportunity" && (
+              <PostOpportunityView
+                opportunities={opportunities}
+                onOpenPostModal={() => setIsPostModalOpen(true)}
+                onNavigateTab={handleNavigateTab}
+                onDeleteOpportunity={handleDeleteOpportunity}
+              />
+            )}
 
-            <div className="p-5 rounded-2xl bg-slate-900 border border-slate-800">
-              <div className="text-xs text-slate-400 font-bold uppercase">Total Applicants</div>
-              <div className="text-3xl font-black text-white mt-2">{companyData.totalApplicants}</div>
-              <p className="text-xs text-slate-400 mt-1">Direct applications</p>
-            </div>
+            {activeTab === "applicants-pipeline" && (
+              <ApplicantsPipelineView
+                candidates={candidates}
+                initialRoleFilter={pipelineRoleFilter}
+                onSelectCandidate={(c) => setSelectedCandidate(c)}
+                onUpdateStage={handleUpdateCandidateStage}
+              />
+            )}
 
-            <div className="p-5 rounded-2xl bg-slate-900 border border-slate-800">
-              <div className="text-xs text-cyan-400 font-bold uppercase">High-Match Talent</div>
-              <div className="text-3xl font-black text-white mt-2">{companyData.verifiedMatches}</div>
-              <p className="text-xs text-cyan-400 mt-1">&gt;85% Skill Vector match</p>
-            </div>
-
-            <div className="p-5 rounded-2xl bg-slate-900 border border-slate-800">
-              <div className="text-xs text-emerald-400 font-bold uppercase">Offers Extended</div>
-              <div className="text-3xl font-black text-white mt-2">{companyData.hiredCount}</div>
-              <p className="text-xs text-emerald-400 mt-1">Verified hires made</p>
-            </div>
-          </div>
-
-          {/* Active Postings & Pipeline */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2 p-6 rounded-3xl bg-slate-900/90 border border-slate-800 space-y-4">
-              <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-                <h3 className="font-bold text-white text-base flex items-center gap-2">
-                  <Briefcase className="w-5 h-5 text-cyan-400" />
-                  Your Active Talent Postings
-                </h3>
-                <Link href="/dashboard/company/postings" className="text-xs text-cyan-400 hover:underline font-semibold">
-                  Manage All →
-                </Link>
-              </div>
-
-              <div className="space-y-3">
-                {activePostings.map((p) => (
-                  <div key={p.id} className="p-4 rounded-2xl bg-slate-950 border border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <h4 className="font-bold text-white text-sm">{p.role}</h4>
-                        <span className="text-[10px] px-2 py-0.5 rounded bg-slate-800 text-slate-300 font-bold">
-                          {p.type}
-                        </span>
-                      </div>
-                      <p className="text-xs text-slate-400 mt-1">{p.applicants} Candidates • Top Match: {p.topMatchScore}</p>
-                      <div className="flex flex-wrap gap-1 mt-2">
-                        {p.skills.map((s) => (
-                          <span key={s} className="text-[10px] px-2 py-0.5 rounded bg-cyan-500/10 text-cyan-300 border border-cyan-500/20">
-                            {s}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-
-                    <Link
-                      href="/dashboard/company/applicants"
-                      className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs transition text-center whitespace-nowrap"
-                    >
-                      Review Candidates ({p.applicants})
-                    </Link>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* AI Top Candidate Discovery Widget */}
-            <div className="p-6 rounded-3xl bg-slate-900/90 border border-slate-800 space-y-4 flex flex-col justify-between">
-              <div>
-                <h3 className="font-bold text-white text-base flex items-center gap-2">
-                  <Target className="w-5 h-5 text-emerald-400" />
-                  AI Recommended Student Discovery
-                </h3>
-                <p className="text-xs text-slate-400 mt-1">Pre-screened candidates matching your AI Systems Engineering vector.</p>
-
-                <div className="space-y-3 mt-4">
-                  {topCandidates.map((c) => (
-                    <div key={c.name} className="p-3.5 rounded-2xl bg-slate-950 border border-slate-800 space-y-2">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <h4 className="font-bold text-white text-xs">{c.name}</h4>
-                          <p className="text-[11px] text-slate-400">{c.college} • TalentIQ: {c.talentIQ}</p>
-                        </div>
-                        <span className="text-xs font-black px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
-                          {c.matchScore}% Match
-                        </span>
-                      </div>
-                      <div className="flex flex-wrap gap-1">
-                        {c.skills.map((sk) => (
-                          <span key={sk} className="text-[9px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-300">
-                            {sk}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <Link
-                href="/dashboard/company/talent-search"
-                className="w-full py-2.5 rounded-xl bg-cyan-500 text-slate-950 font-bold text-xs text-center hover:bg-cyan-400 transition block mt-2"
-              >
-                Search 3,400+ Verified Students
-              </Link>
-            </div>
+            {activeTab === "industry-projects" && (
+              <IndustryProjectsView
+                challenges={challenges}
+                onOpenSponsorModal={() => setIsSponsorModalOpen(true)}
+              />
+            )}
           </div>
         </main>
       </div>
+
+      {/* Candidate Breakdown Modal */}
+      <CandidateBreakdownModal
+        candidate={selectedCandidate}
+        onClose={() => setSelectedCandidate(null)}
+        onInvite={handleInviteCandidate}
+      />
+
+      {/* Post Opportunity Modal */}
+      <PostOpportunityModal
+        isOpen={isPostModalOpen}
+        onClose={() => setIsPostModalOpen(false)}
+        onAddOpportunity={handleAddOpportunity}
+      />
+
+      {/* Sponsor Challenge Modal */}
+      <SponsorChallengeModal
+        isOpen={isSponsorModalOpen}
+        onClose={() => setIsSponsorModalOpen(false)}
+        onAddChallenge={handleAddChallenge}
+      />
+
+      {/* Toast Notification */}
+      {toastMessage && (
+        <div className="fixed bottom-6 right-6 z-50 flex items-center gap-2.5 px-4 py-3 rounded-2xl bg-[#091526] border border-cyan-500/40 text-cyan-300 text-xs font-semibold shadow-2xl shadow-cyan-950/50 animate-in slide-in-from-bottom-3">
+          <CheckCircle2 className="w-4 h-4 text-cyan-400" />
+          <span>{toastMessage}</span>
+        </div>
+      )}
     </div>
+  );
+}
+
+export default function CompanyDashboardPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#040a14] text-white flex items-center justify-center">Loading SkillLink Recruiter Hub...</div>}>
+      <CompanyDashboardContent />
+    </Suspense>
   );
 }
