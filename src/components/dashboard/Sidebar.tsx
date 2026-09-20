@@ -66,7 +66,7 @@ export default function DashboardSidebar({ role = "STUDENT", activeTab, onSelect
 
   const mentorLinks: NavItem[] = [
     { label: "Mentor Workspace", href: "/dashboard/mentor", icon: LayoutDashboard },
-    { label: "Mentee Sessions", href: "/dashboard/mentor/sessions", icon: Calendar },
+    { label: "Mentor Sessions", href: "/dashboard/mentor/sessions", icon: Calendar },
     { label: "Project Reviews", href: "/dashboard/mentor/reviews", icon: FolderKanban },
     { label: "Messages", href: "/dashboard/mentor/messages", icon: MessageSquare },
   ];
@@ -150,10 +150,12 @@ export default function DashboardSidebar({ role = "STUDENT", activeTab, onSelect
             </div>
             <div className="leading-tight">
               <h4 className="text-xs font-bold text-white leading-snug">
-                Build Your Future
+                {role === "MENTOR" ? "Support Your Future Talent" : "Build Your Future"}
               </h4>
-              <p className="text-[10px] text-slate-300 font-medium">with SkillLink</p>
-              <p className="text-[9px] text-slate-400 mt-0.5">Learn • Build • Grow</p>
+              {role === "MENTOR" ? null : <p className="text-[10px] text-slate-300 font-medium">with SkillLink</p>}
+              <p className="text-[9px] text-slate-400 mt-0.5">
+                {role === "MENTOR" ? "Mentor • Guide • Grow" : "Learn • Build • Grow"}
+              </p>
             </div>
           </div>
           <svg className="w-4 h-4 text-slate-500 group-hover:text-cyan-400 transition shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">

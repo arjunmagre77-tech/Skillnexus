@@ -24,6 +24,7 @@ const publicRoutes = [
   "/for-colleges",
   "/for-companies",
   "/pricing",
+  "/dashboard",
 ];
 
 export const proxy = auth((req) => {
