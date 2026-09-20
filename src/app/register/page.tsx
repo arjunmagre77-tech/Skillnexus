@@ -1,5 +1,6 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -11,8 +12,16 @@ import {
 
 export default function RegisterPage() {
   const router = useRouter();
+  const { data: session, status } = useSession();
   const [step, setStep] = useState<1 | 2>(1);
   const [role, setRole] = useState<"STUDENT" | "COLLEGE" | "COMPANY" | "MENTOR">("STUDENT");
+
+  useEffect(() => {
+    if (status === "authenticated" && session?.user) {
+      const userRole = ((session.user as any).role || "student").toLowerCase();
+      router.push(`/dashboard/${userRole}`);
+    }
+  }, [status, session, router]);
   
   const [formData, setFormData] = useState({
     name: "",

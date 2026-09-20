@@ -1,9 +1,10 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
+import { signOut } from "next-auth/react";
 import { 
   Search, Bell, Sparkles, ChevronDown, User, Settings, 
-  HelpCircle, ShieldCheck, Flame, BookOpen, Briefcase
+  HelpCircle, ShieldCheck, Flame, BookOpen, Briefcase, LogOut
 } from "lucide-react";
 
 interface HeaderProps {
@@ -119,9 +120,13 @@ export default function DashboardHeader({
                 <span>Verified Skills Matrix</span>
               </Link>
               <div className="my-1 border-t border-slate-800" />
-              <Link href="/api/auth/signout" className="flex items-center gap-2 px-3 py-2 rounded-lg text-red-400 hover:bg-red-500/10 transition">
+              <button
+                onClick={() => signOut({ callbackUrl: "/" })}
+                className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-red-400 hover:bg-red-500/10 transition text-left cursor-pointer"
+              >
+                <LogOut className="w-3.5 h-3.5" />
                 <span>Sign Out</span>
-              </Link>
+              </button>
             </div>
           )}
         </div>

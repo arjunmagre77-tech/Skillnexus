@@ -1,11 +1,12 @@
 "use client";
 import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
+import { useSession, signOut } from "next-auth/react";
 import { 
   ArrowRight, Zap, Target, TrendingUp, Award, Users, Building2, 
   ChevronDown, Star, CheckCircle, BarChart3, BookOpen, Briefcase,
   Brain, Flame, Trophy, Shield, Sparkles, Globe, ChevronRight,
-  PlayCircle, Share2
+  PlayCircle, Share2, LogOut, LayoutDashboard
 } from "lucide-react";
 
 const stats = [
@@ -78,12 +79,25 @@ export default function LandingPage() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenu, setMobileMenu] = useState(false);
+  const { data: session, status } = useSession();
+
+  const userRole = (session?.user as any)?.role || "student";
+  const userDashPath = `/dashboard/${userRole.toLowerCase()}`;
 
   useEffect(() => {
     const h = () => setScrolled(window.scrollY > 40);
     window.addEventListener("scroll", h);
     return () => window.removeEventListener("scroll", h);
   }, []);
+
+  const navLinks = [
+    ["Features", "#features"],
+    ["For Students", "/dashboard/student"],
+    ["For Colleges", "/dashboard/college"],
+    ["For Companies", "/dashboard/company"],
+    ["For Mentors", "/dashboard/mentor"],
+    ["Pricing", "#pricing"],
+  ];
 
   return (
     <div style={{ background: "var(--primary)", color: "var(--text)", minHeight: "100vh" }}>
@@ -107,8 +121,8 @@ export default function LandingPage() {
             <span style={{ fontSize: "1.1rem", fontWeight: 800, fontFamily: "'Space Grotesk', sans-serif", color: "var(--text)" }}>Skill<span style={{ color: "#00D4FF" }}>Link</span></span>
           </Link>
 
-          <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "2rem" }} className="desktop-nav">
-            {[["Features", "#features"], ["For Students", "/dashboard/student"], ["For Colleges", "/dashboard/college"], ["Pricing", "#pricing"]].map(([label, href]) => (
+          <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "1.5rem" }} className="desktop-nav">
+            {navLinks.map(([label, href]) => (
               <Link key={label} href={href} style={{ color: "var(--text-muted)", textDecoration: "none", fontSize: "0.875rem", fontWeight: 500, transition: "color 0.2s" }}
                 onMouseEnter={e => (e.currentTarget.style.color = "var(--text)")}
                 onMouseLeave={e => (e.currentTarget.style.color = "var(--text-muted)")}>
@@ -118,8 +132,21 @@ export default function LandingPage() {
           </div>
 
           <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-            <Link href="/login" className="btn btn-secondary btn-sm">Sign In</Link>
-            <Link href="/register" className="btn btn-primary btn-sm">Get Started</Link>
+            {status === "authenticated" && session ? (
+              <>
+                <Link href={userDashPath} className="btn btn-primary btn-sm" style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
+                  <LayoutDashboard size={14} /> Go to Dashboard
+                </Link>
+                <button onClick={() => signOut({ callbackUrl: "/" })} className="btn btn-secondary btn-sm" style={{ display: "flex", alignItems: "center", gap: "0.4rem", cursor: "pointer" }}>
+                  <LogOut size={14} /> Sign Out
+                </button>
+              </>
+            ) : (
+              <>
+                <Link href="/login" className="btn btn-secondary btn-sm">Sign In</Link>
+                <Link href="/register" className="btn btn-primary btn-sm">Get Started</Link>
+              </>
+            )}
           </div>
         </div>
       </nav>
