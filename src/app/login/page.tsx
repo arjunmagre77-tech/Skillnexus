@@ -1,12 +1,12 @@
 "use client";
-import { useState, Suspense } from "react";
-import { signIn } from "next-auth/react";
+import { useState, useEffect, Suspense } from "react";
+import { signIn, useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import {
   Mail, Lock, Eye, EyeOff, ArrowRight, AlertCircle, Sparkles,
-  GraduationCap, Building2, Building, Users, CheckCircle2
+  GraduationCap, Building2, Building, Users, CheckCircle2, LayoutDashboard
 } from "lucide-react";
 
 const demoAccounts = [
@@ -19,6 +19,7 @@ const demoAccounts = [
 function LoginContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { data: session, status } = useSession();
   const registered = searchParams.get("registered");
   const defaultEmail = searchParams.get("email") || "";
 
@@ -27,6 +28,13 @@ function LoginContent() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading]         = useState(false);
   const [error, setError]             = useState("");
+
+  useEffect(() => {
+    if (status === "authenticated" && session?.user) {
+      const role = ((session.user as any).role || "student").toLowerCase();
+      router.push(`/dashboard/${role}`);
+    }
+  }, [status, session, router]);
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
