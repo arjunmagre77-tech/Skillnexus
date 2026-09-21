@@ -4,516 +4,536 @@ import Link from "next/link";
 import DashboardSidebar from "@/components/dashboard/Sidebar";
 import DashboardHeader from "@/components/dashboard/Header";
 import { 
-  CheckCircle2, Clock, Search, Filter, Briefcase, 
-  Building2, ChevronRight, X, Calendar, UserCheck, AlertTriangle,
-  FileText, ArrowRight, ExternalLink, Sparkles, MessageSquare, Trash2
+  Briefcase, Send, CheckCircle2, Calendar, Gift, 
+  SlidersHorizontal, Filter, ArrowRight, Star, Clock, 
+  Users, Check, ChevronRight, X, Sparkles, Building2, MapPin
 } from "lucide-react";
-
-type ApplicationStatus = "applied" | "screened" | "shortlisted" | "interview" | "selected" | "rejected";
 
 interface ApplicationItem {
   id: string;
   role: string;
   company: string;
   logo: string;
-  type: "Job" | "Internship";
-  salary: string;
+  logoBg: string;
+  type: "Internship" | "Full-time";
   location: string;
-  appliedDate: string;
-  matchScore: number;
-  status: ApplicationStatus;
+  status: "applied" | "shortlisted" | "in_interview" | "offer";
+  statusLabel: string;
+  statusBadgeColor: string;
+  skills: string[];
+  extraSkillsCount: number;
   currentStepIndex: number; // 0: Applied, 1: Screened, 2: Shortlisted, 3: Interview, 4: Offer
-  recruiterNote?: string;
-  interviewDate?: string;
-  nextStepAction?: string;
+  timeAgo: string;
+  applicantsCount: number;
+  matchScore: number;
+  matchLabel: string;
 }
 
 export default function ApplicationsPage() {
-  const [search, setSearch] = useState("");
-  const [selectedFilter, setSelectedFilter] = useState<string>("all");
-  const [activeModalApp, setActiveModalApp] = useState<ApplicationItem | null>(null);
-  const [applications, setApplications] = useState<ApplicationItem[]>([
+  const [activeTab, setActiveTab] = useState<"all" | "applied" | "shortlisted" | "interview" | "offers">("all");
+  const [sortBy, setSortBy] = useState("latest");
+  const [selectedApp, setSelectedApp] = useState<ApplicationItem | null>(null);
+
+  const applications: ApplicationItem[] = [
     {
       id: "app_1",
-      role: "AI Systems Engineering Intern",
-      company: "OpenAI Labs",
-      logo: "🤖",
+      role: "Software Development Engineer Intern",
+      company: "Google",
+      logo: "G",
+      logoBg: "bg-white text-slate-900 border border-slate-200",
       type: "Internship",
-      salary: "$3,500 / month",
-      location: "Remote / San Francisco",
-      appliedDate: "Yesterday at 4:30 PM",
-      matchScore: 94,
-      status: "shortlisted",
-      currentStepIndex: 2,
-      recruiterNote: "Your verified PyTorch & Next.js skill vector scored in the top 5% of candidates. Moved to technical assessment round.",
-      nextStepAction: "Complete System Design Take-home Task before Sep 18"
+      location: "San Francisco, CA (Hybrid)",
+      status: "applied",
+      statusLabel: "Applied",
+      statusBadgeColor: "bg-purple-500/15 text-purple-300 border-purple-500/30",
+      skills: ["Python", "Next.js", "PyTorch"],
+      extraSkillsCount: 2,
+      currentStepIndex: 0,
+      timeAgo: "2 days ago",
+      applicantsCount: 94,
+      matchScore: 92,
+      matchLabel: "Top Match"
     },
     {
       id: "app_2",
-      company: "Stripe",
-      logo: "💳",
-      role: "Full Stack Platform Engineer",
-      type: "Job",
-      salary: "₹18 - ₹24 LPA",
-      location: "Bengaluru (Hybrid)",
-      appliedDate: "3 days ago",
-      matchScore: 89,
-      status: "interview",
-      currentStepIndex: 3,
-      interviewDate: "Sep 16, 2026 at 2:00 PM IST",
-      recruiterNote: "Initial screening passed with flying colors! 1-on-1 interview scheduled with Engineering Lead Dr. Vikram Sethi.",
-      nextStepAction: "Join Zoom Interview Link (Google Calendar Invites Sent)"
+      role: "ML Engineer Intern",
+      company: "Microsoft",
+      logo: "MS",
+      logoBg: "bg-[#0b182d] text-cyan-400 border border-cyan-500/30",
+      type: "Internship",
+      location: "Hyderabad, India (Remote)",
+      status: "shortlisted",
+      statusLabel: "Shortlisted",
+      statusBadgeColor: "bg-cyan-500/15 text-cyan-300 border-cyan-500/30",
+      skills: ["Python", "TensorFlow", "Machine Learning"],
+      extraSkillsCount: 1,
+      currentStepIndex: 2,
+      timeAgo: "5 days ago",
+      applicantsCount: 112,
+      matchScore: 85,
+      matchLabel: "High Match"
     },
     {
       id: "app_3",
-      company: "TechCorp India",
-      logo: "🏢",
-      role: "Frontend Developer Intern",
+      role: "Backend Developer Intern",
+      company: "Amazon",
+      logo: "amazon",
+      logoBg: "bg-slate-900 text-amber-400 border border-slate-700",
       type: "Internship",
-      salary: "₹25,000 / month",
-      location: "Bangalore",
-      appliedDate: "1 week ago",
-      matchScore: 92,
-      status: "selected",
-      currentStepIndex: 4,
-      recruiterNote: "Congratulations Arjun! Final offer letter generated. Please review and sign your acceptance before Sep 20.",
-      nextStepAction: "Review and Sign Offer Letter"
+      location: "Bengaluru, India (Hybrid)",
+      status: "in_interview",
+      statusLabel: "In interview",
+      statusBadgeColor: "bg-amber-500/15 text-amber-300 border-amber-500/30",
+      skills: ["Java", "Spring Boot", "MySQL"],
+      extraSkillsCount: 2,
+      currentStepIndex: 3,
+      timeAgo: "1 week ago",
+      applicantsCount: 98,
+      matchScore: 82,
+      matchLabel: "Good Match"
     },
     {
       id: "app_4",
-      company: "Databricks",
-      logo: "⚡",
-      role: "ML Infrastructure Intern",
-      type: "Internship",
-      salary: "$3,800 / month",
-      location: "Remote",
-      appliedDate: "1 week ago",
-      matchScore: 82,
-      status: "applied",
-      currentStepIndex: 0,
-      recruiterNote: "Application received. AI resume & skill vector index screening in progress.",
+      role: "Full Stack Developer",
+      company: "Tata Consultancy Services",
+      logo: "tcs",
+      logoBg: "bg-gradient-to-br from-indigo-900 to-purple-900 text-white font-bold",
+      type: "Full-time",
+      location: "Mumbai, India (Hybrid)",
+      status: "offer",
+      statusLabel: "Offer Received",
+      statusBadgeColor: "bg-violet-500/20 text-violet-300 border-violet-500/30",
+      skills: ["React", "Node.js", "MongoDB"],
+      extraSkillsCount: 2,
+      currentStepIndex: 4,
+      timeAgo: "1 week ago",
+      applicantsCount: 150,
+      matchScore: 89,
+      matchLabel: "Excellent Match"
     },
     {
       id: "app_5",
-      company: "Razorpay",
-      logo: "💸",
-      role: "Backend Systems Intern",
+      role: "Cloud Engineer Intern",
+      company: "Cloudflare",
+      logo: "☁️",
+      logoBg: "bg-sky-950 text-sky-400 border border-sky-500/30",
       type: "Internship",
-      salary: "₹65,000 / month",
-      location: "Bengaluru",
-      appliedDate: "2 weeks ago",
-      matchScore: 91,
-      status: "shortlisted",
-      currentStepIndex: 2,
-      recruiterNote: "Shortlisted based on Node.js & SQL verified badge achievements. Waiting for interview scheduling.",
-    },
-    {
-      id: "app_6",
-      company: "Swiggy Labs",
-      logo: "🛵",
-      role: "Data Engineering Intern",
-      type: "Internship",
-      salary: "₹50,000 / month",
-      location: "Bengaluru",
-      appliedDate: "3 weeks ago",
+      location: "Remote (US / India)",
+      status: "applied",
+      statusLabel: "Applied",
+      statusBadgeColor: "bg-purple-500/15 text-purple-300 border-purple-500/30",
+      skills: ["AWS", "Docker", "Kubernetes"],
+      extraSkillsCount: 1,
+      currentStepIndex: 0,
+      timeAgo: "3 days ago",
+      applicantsCount: 74,
       matchScore: 78,
-      status: "rejected",
-      currentStepIndex: 1,
-      recruiterNote: "Thank you for applying. At this time we require candidates with advanced Apache Spark experience.",
+      matchLabel: "Good Match"
     }
-  ]);
-
-  const stepsList = [
-    { title: "Applied", desc: "Submitted with Skill Vector" },
-    { title: "Screened", desc: "AI Profile Indexing" },
-    { title: "Shortlisted", desc: "Passed Initial Filter" },
-    { title: "Interview", desc: "Live Technical Round" },
-    { title: "Offer / Hired", desc: "Final Selection" },
   ];
 
-  const handleWithdraw = (id: string) => {
-    if (confirm("Are you sure you want to withdraw this application?")) {
-      setApplications(applications.filter(a => a.id !== id));
-      setActiveModalApp(null);
-    }
-  };
+  const steps = ["Applied", "Screened", "Shortlisted", "Interview", "Offer"];
 
-  const counts = {
-    total: applications.length,
-    shortlisted: applications.filter(a => a.status === "shortlisted").length,
-    interview: applications.filter(a => a.status === "interview").length,
-    selected: applications.filter(a => a.status === "selected").length,
-  };
-
-  const filteredApps = applications.filter(app => {
-    const matchesSearch = app.role.toLowerCase().includes(search.toLowerCase()) || 
-                          app.company.toLowerCase().includes(search.toLowerCase());
-    const matchesFilter = selectedFilter === "all" || app.status === selectedFilter;
-
-    return matchesSearch && matchesFilter;
+  const filteredApps = applications.filter((app) => {
+    if (activeTab === "applied") return app.status === "applied";
+    if (activeTab === "shortlisted") return app.status === "shortlisted";
+    if (activeTab === "interview") return app.status === "in_interview";
+    if (activeTab === "offers") return app.status === "offer";
+    return true;
   });
 
-  const getStatusBadge = (status: ApplicationStatus) => {
-    switch (status) {
-      case "selected":
-        return <span className="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs font-bold flex items-center gap-1">● Selected / Offer</span>;
-      case "interview":
-        return <span className="px-3 py-1 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30 text-xs font-bold flex items-center gap-1">● Interview Scheduled</span>;
-      case "shortlisted":
-        return <span className="px-3 py-1 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 text-xs font-bold flex items-center gap-1">● Shortlisted</span>;
-      case "screened":
-        return <span className="px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/30 text-xs font-bold flex items-center gap-1">● Profile Screened</span>;
-      case "rejected":
-        return <span className="px-3 py-1 rounded-full bg-slate-800 text-slate-400 border border-slate-700 text-xs font-bold flex items-center gap-1">● Closed</span>;
-      default:
-        return <span className="px-3 py-1 rounded-full bg-slate-800 text-slate-300 border border-slate-700 text-xs font-bold flex items-center gap-1">● Application Under Review</span>;
-    }
-  };
-
   return (
-    <div className="min-h-screen bg-[#060911] text-slate-100 flex font-sans">
+    <div className="min-h-screen bg-[#030712] text-slate-100 flex font-sans">
       <DashboardSidebar role="STUDENT" />
 
       <div className="flex-1 flex flex-col min-w-0">
-        <DashboardHeader 
-          title="My Applications" 
-          subtitle="Track application status, interview schedules, and employer responses."
-        />
+        <DashboardHeader />
 
-        <main className="p-6 space-y-6 overflow-y-auto">
+        <main className="p-5 md:p-7 space-y-6 overflow-y-auto">
           
-          {/* Applications Metric Overview Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            
-            {/* Total Applied */}
-            <div className="p-4 rounded-2xl bg-[#091022] border border-blue-900/60 shadow-lg flex items-center justify-between">
-              <div className="space-y-1">
-                <span className="text-xs font-semibold text-slate-400">Total Submitted</span>
-                <div className="text-2xl font-black text-white">{counts.total}</div>
-                <p className="text-[11px] text-slate-400">Positions in pipeline</p>
+          {/* Top Hero Banner */}
+          <div className="relative rounded-2xl overflow-hidden border border-[#163354] bg-gradient-to-r from-[#07152b] via-[#091e3d] to-[#0a2347] p-6 md:p-8 shadow-xl">
+            <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+              
+              <div className="space-y-2 max-w-xl">
+                <div className="flex items-center gap-3">
+                  <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-blue-600 to-cyan-500 flex items-center justify-center shadow-lg shadow-cyan-500/20 text-white">
+                    <Briefcase className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <h1 className="text-2xl md:text-3xl font-extrabold text-white tracking-tight">
+                      My Applications
+                    </h1>
+                    <p className="text-xs md:text-sm text-slate-300 mt-1 leading-relaxed">
+                      Track your internship and job applications, view status, and stay on top of your opportunities.
+                    </p>
+                  </div>
+                </div>
               </div>
-              <div className="w-10 h-10 rounded-2xl bg-blue-600/20 text-cyan-400 flex items-center justify-center">
-                <FileText className="w-5 h-5" />
-              </div>
-            </div>
 
-            {/* Shortlisted */}
-            <div className="p-4 rounded-2xl bg-[#091022] border border-cyan-900/60 shadow-lg flex items-center justify-between">
-              <div className="space-y-1">
-                <span className="text-xs font-semibold text-slate-400">Shortlisted</span>
-                <div className="text-2xl font-black text-cyan-400">{counts.shortlisted}</div>
-                <p className="text-[11px] text-slate-400">Top candidate pools</p>
+              {/* Right Motivational Card */}
+              <div className="p-4 rounded-2xl bg-[#091b36] border border-cyan-500/30 flex items-center gap-3.5 shadow-lg max-w-sm">
+                <div className="w-10 h-10 rounded-xl bg-cyan-500/20 flex items-center justify-center text-cyan-400 shrink-0">
+                  <Send className="w-5 h-5 -rotate-12" />
+                </div>
+                <div className="text-xs font-semibold text-slate-200">
+                  Every application brings you closer to your dream!
+                </div>
               </div>
-              <div className="w-10 h-10 rounded-2xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center">
-                <UserCheck className="w-5 h-5" />
-              </div>
-            </div>
 
-            {/* Interviews */}
-            <div className="p-4 rounded-2xl bg-[#091022] border border-amber-900/60 shadow-lg flex items-center justify-between">
-              <div className="space-y-1">
-                <span className="text-xs font-semibold text-slate-400">In Interview</span>
-                <div className="text-2xl font-black text-amber-400">{counts.interview}</div>
-                <p className="text-[11px] text-slate-400">Active sessions scheduled</p>
-              </div>
-              <div className="w-10 h-10 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center">
-                <Calendar className="w-5 h-5" />
-              </div>
             </div>
-
-            {/* Offers / Selected */}
-            <div className="p-4 rounded-2xl bg-[#091022] border border-emerald-900/60 shadow-lg flex items-center justify-between">
-              <div className="space-y-1">
-                <span className="text-xs font-semibold text-slate-400">Offers Received</span>
-                <div className="text-2xl font-black text-emerald-400">{counts.selected}</div>
-                <p className="text-[11px] text-slate-400">Offers ready for review</p>
-              </div>
-              <div className="w-10 h-10 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center">
-                <Sparkles className="w-5 h-5" />
-              </div>
-            </div>
-
           </div>
 
-          {/* Search & Status Filter Tabs */}
-          <div className="p-4 rounded-2xl bg-[#091022] border border-blue-900/60 shadow-xl space-y-4">
-            <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
-              
-              {/* Search Bar */}
-              <div className="flex items-center gap-2 bg-[#0e1626] border border-slate-800 rounded-xl px-3.5 py-2.5 w-full md:w-96 focus-within:border-cyan-500 transition">
-                <Search className="w-4 h-4 text-slate-400" />
-                <input
-                  type="text"
-                  placeholder="Search application by company or role..."
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  className="bg-transparent text-xs text-white placeholder-slate-400 focus:outline-none w-full"
-                />
+          {/* 4 Stats Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {/* Stat 1 */}
+            <div className="p-4 rounded-2xl bg-[#061224] border border-[#132c4e] flex items-center gap-4 shadow-md">
+              <div className="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 shrink-0">
+                <Send className="w-5 h-5" />
+              </div>
+              <div>
+                <div className="text-xs text-slate-400 font-medium">Total Submitted</div>
+                <div className="text-2xl font-black text-white">6</div>
+                <div className="text-[11px] text-slate-500">Applications sent</div>
+              </div>
+            </div>
+
+            {/* Stat 2 */}
+            <div className="p-4 rounded-2xl bg-[#061224] border border-[#132c4e] flex items-center gap-4 shadow-md">
+              <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 shrink-0">
+                <CheckCircle2 className="w-5 h-5" />
+              </div>
+              <div>
+                <div className="text-xs text-slate-400 font-medium">Shortlisted</div>
+                <div className="text-2xl font-black text-white">2</div>
+                <div className="text-[11px] text-emerald-400">Moving forward</div>
+              </div>
+            </div>
+
+            {/* Stat 3 */}
+            <div className="p-4 rounded-2xl bg-[#061224] border border-[#132c4e] flex items-center gap-4 shadow-md">
+              <div className="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 shrink-0">
+                <Calendar className="w-5 h-5" />
+              </div>
+              <div>
+                <div className="text-xs text-slate-400 font-medium">In Interview</div>
+                <div className="text-2xl font-black text-white">1</div>
+                <div className="text-[11px] text-amber-400">Active sessions</div>
+              </div>
+            </div>
+
+            {/* Stat 4 */}
+            <div className="p-4 rounded-2xl bg-[#061224] border border-[#132c4e] flex items-center gap-4 shadow-md">
+              <div className="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400 shrink-0">
+                <Gift className="w-5 h-5" />
+              </div>
+              <div>
+                <div className="text-xs text-slate-400 font-medium">Offers Received</div>
+                <div className="text-2xl font-black text-white">1</div>
+                <div className="text-[11px] text-purple-400">Great news!</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Filter Pills & Sort Controls */}
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            {/* Filter Pills */}
+            <div className="flex items-center gap-1.5 bg-[#050e1d] p-1 rounded-xl border border-[#142847]">
+              <button
+                onClick={() => setActiveTab("all")}
+                className={`px-3.5 py-2 rounded-lg text-xs font-semibold transition-all ${
+                  activeTab === "all"
+                    ? "bg-[#0b284d] text-cyan-300 border border-cyan-500/30 shadow-sm"
+                    : "text-slate-400 hover:text-white"
+                }`}
+              >
+                All Applications (6)
+              </button>
+              <button
+                onClick={() => setActiveTab("applied")}
+                className={`px-3.5 py-2 rounded-lg text-xs font-semibold transition-all ${
+                  activeTab === "applied"
+                    ? "bg-[#0b284d] text-cyan-300 border border-cyan-500/30 shadow-sm"
+                    : "text-slate-400 hover:text-white"
+                }`}
+              >
+                Applied (4)
+              </button>
+              <button
+                onClick={() => setActiveTab("shortlisted")}
+                className={`px-3.5 py-2 rounded-lg text-xs font-semibold transition-all ${
+                  activeTab === "shortlisted"
+                    ? "bg-[#0b284d] text-cyan-300 border border-cyan-500/30 shadow-sm"
+                    : "text-slate-400 hover:text-white"
+                }`}
+              >
+                Shortlisted (2)
+              </button>
+              <button
+                onClick={() => setActiveTab("interview")}
+                className={`px-3.5 py-2 rounded-lg text-xs font-semibold transition-all ${
+                  activeTab === "interview"
+                    ? "bg-[#0b284d] text-cyan-300 border border-cyan-500/30 shadow-sm"
+                    : "text-slate-400 hover:text-white"
+                }`}
+              >
+                In Interview (1)
+              </button>
+              <button
+                onClick={() => setActiveTab("offers")}
+                className={`px-3.5 py-2 rounded-lg text-xs font-semibold transition-all ${
+                  activeTab === "offers"
+                    ? "bg-[#0b284d] text-cyan-300 border border-cyan-500/30 shadow-sm"
+                    : "text-slate-400 hover:text-white"
+                }`}
+              >
+                Offers (1)
+              </button>
+            </div>
+
+            {/* Right Controls */}
+            <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 bg-[#050e1d] border border-[#142847] px-3 py-1.5 rounded-xl text-xs text-slate-300">
+                <SlidersHorizontal className="w-3.5 h-3.5 text-cyan-400" />
+                <span className="text-slate-400">Sort by:</span>
+                <select
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value)}
+                  className="bg-transparent text-xs text-white focus:outline-none cursor-pointer font-medium"
+                >
+                  <option value="latest" className="bg-[#050e1d] text-white">Latest</option>
+                  <option value="match" className="bg-[#050e1d] text-white">Match Score</option>
+                </select>
               </div>
 
-              {/* Status Filter Tabs */}
-              <div className="flex flex-wrap items-center gap-1.5 bg-[#0e1626] border border-slate-800 rounded-xl p-1 text-xs">
-                {[
-                  { id: "all", label: "All" },
-                  { id: "shortlisted", label: "Shortlisted" },
-                  { id: "interview", label: "Interview" },
-                  { id: "selected", label: "Offers" },
-                  { id: "applied", label: "Under Review" },
-                  { id: "rejected", label: "Closed" },
-                ].map((tab) => (
-                  <button
-                    key={tab.id}
-                    onClick={() => setSelectedFilter(tab.id)}
-                    className={`px-3 py-1.5 rounded-lg font-bold transition capitalize ${
-                      selectedFilter === tab.id
-                        ? "bg-blue-600 text-white shadow-md"
-                        : "text-slate-400 hover:text-slate-200"
-                    }`}
-                  >
-                    {tab.label}
-                  </button>
-                ))}
-              </div>
+              <button 
+                onClick={() => alert("Filter options opened")}
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-[#050e1d] border border-[#142847] hover:border-cyan-500/40 rounded-xl text-xs text-slate-300 transition-colors"
+              >
+                <Filter className="w-3.5 h-3.5 text-cyan-400" />
+                <span>Filters</span>
+              </button>
             </div>
           </div>
 
           {/* Applications List */}
-          {filteredApps.length === 0 ? (
-            <div className="p-12 rounded-3xl bg-[#091022] border border-slate-800 text-center space-y-3">
-              <Briefcase className="w-12 h-12 text-slate-600 mx-auto" />
-              <h3 className="text-base font-bold text-white">No applications match your filter</h3>
-              <p className="text-xs text-slate-400 max-w-sm mx-auto">
-                Reset your filter parameters or apply for new roles on the Job Matches tab.
-              </p>
-              <button
-                onClick={() => { setSearch(""); setSelectedFilter("all"); }}
-                className="px-4 py-2 rounded-xl bg-blue-600 text-white font-bold text-xs hover:bg-blue-500 transition"
-              >
-                Clear Filters
-              </button>
-            </div>
-          ) : (
-            <div className="space-y-4">
-              {filteredApps.map((app) => (
+          <div className="space-y-4">
+            {filteredApps.map((app) => {
+              return (
                 <div
                   key={app.id}
-                  className="p-6 rounded-3xl bg-[#091022] border border-blue-900/60 hover:border-cyan-500/50 transition-all space-y-5 shadow-xl group"
+                  className="p-5 rounded-2xl bg-[#061224] border border-[#132c4e] hover:border-cyan-500/40 transition-all duration-300 shadow-lg group relative"
                 >
-                  {/* Top Row Header */}
-                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 rounded-2xl bg-slate-800 border border-slate-700 flex items-center justify-center text-2xl shadow-inner shrink-0">
-                        {app.logo}
-                      </div>
-                      <div className="space-y-0.5">
-                        <div className="flex items-center gap-2.5">
-                          <h3 className="text-base font-bold text-white group-hover:text-cyan-300 transition">
-                            {app.role}
-                          </h3>
-                          <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-md bg-slate-800 text-slate-300 border border-slate-700">
-                            {app.type}
+                  <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5">
+                    
+                    {/* Left: Logo & Job Details */}
+                    <div className="flex items-start gap-4 lg:w-4/12 min-w-0">
+                      <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-sm font-extrabold shadow shrink-0 ${app.logoBg}`}>
+                        {app.company === "Google" && (
+                          <span className="text-xl font-bold bg-gradient-to-r from-blue-500 via-red-500 to-yellow-500 bg-clip-text text-transparent">
+                            G
                           </span>
-                        </div>
-                        <p className="text-xs text-slate-400 font-medium">
-                          {app.company} • Applied {app.appliedDate} • {app.location}
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-3 self-start md:self-center">
-                      <div className="text-right hidden sm:block">
-                        <div className="text-[10px] uppercase font-bold text-slate-400">Match Score</div>
-                        <div className="text-sm font-black text-cyan-400">{app.matchScore}% Vector</div>
-                      </div>
-                      {getStatusBadge(app.status)}
-                    </div>
-                  </div>
-
-                  {/* 5-Step Visual Stepper Progress */}
-                  <div className="p-4 rounded-2xl bg-[#0d162d] border border-slate-800/80 space-y-3">
-                    <div className="text-xs font-bold text-slate-300 flex items-center justify-between">
-                      <span>Pipeline Progress</span>
-                      <span className="text-[11px] text-slate-400 font-medium">
-                        Stage {app.currentStepIndex + 1} of 5: {stepsList[app.currentStepIndex]?.title}
-                      </span>
-                    </div>
-
-                    <div className="grid grid-cols-5 gap-1.5">
-                      {stepsList.map((step, idx) => {
-                        const isCompleted = idx < app.currentStepIndex;
-                        const isCurrent = idx === app.currentStepIndex;
-
-                        return (
-                          <div key={idx} className="space-y-1.5">
-                            <div
-                              className={`h-2 rounded-full transition-all ${
-                                isCompleted
-                                  ? "bg-cyan-400"
-                                  : isCurrent
-                                  ? "bg-gradient-to-r from-cyan-400 to-blue-500 animate-pulse"
-                                  : "bg-slate-800"
-                              }`}
-                            />
-                            <div className="text-center hidden sm:block">
-                              <p className={`text-[10px] font-bold ${isCurrent ? "text-cyan-300" : isCompleted ? "text-slate-300" : "text-slate-500"}`}>
-                                {step.title}
-                              </p>
-                            </div>
+                        )}
+                        {app.company === "Microsoft" && (
+                          <div className="grid grid-cols-2 gap-0.5 w-5 h-5">
+                            <span className="bg-red-500 rounded-[1px]" />
+                            <span className="bg-green-500 rounded-[1px]" />
+                            <span className="bg-blue-500 rounded-[1px]" />
+                            <span className="bg-yellow-500 rounded-[1px]" />
                           </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-
-                  {/* Recruiter Note / Next Step Alert if present */}
-                  {app.recruiterNote && (
-                    <div className="p-3.5 rounded-2xl bg-blue-950/40 border border-blue-500/30 flex items-start gap-3">
-                      <MessageSquare className="w-4 h-4 text-cyan-400 shrink-0 mt-0.5" />
-                      <div className="space-y-1 text-xs">
-                        <p className="text-slate-200 font-medium leading-relaxed">
-                          <strong className="text-white">Employer Feedback:</strong> {app.recruiterNote}
-                        </p>
-                        {app.nextStepAction && (
-                          <p className="text-cyan-300 font-bold text-[11px] flex items-center gap-1 pt-0.5">
-                            ⚡ Action Required: {app.nextStepAction}
-                          </p>
+                        )}
+                        {app.company === "Amazon" && (
+                          <span className="text-xs tracking-tighter text-amber-400">amazon</span>
+                        )}
+                        {app.company === "Tata Consultancy Services" && (
+                          <span className="text-xs uppercase tracking-tight text-white">tcs</span>
+                        )}
+                        {app.company === "Cloudflare" && (
+                          <span className="text-xl">☁️</span>
                         )}
                       </div>
+
+                      <div className="min-w-0 space-y-1.5">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${app.statusBadgeColor}`}>
+                            {app.statusLabel}
+                          </span>
+                        </div>
+                        <h2 className="text-sm font-bold text-white group-hover:text-cyan-300 transition-colors truncate">
+                          {app.role}
+                        </h2>
+                        <div className="text-xs text-slate-400 truncate">
+                          {app.company} • {app.type} • {app.location}
+                        </div>
+
+                        {/* Skill Pills */}
+                        <div className="flex flex-wrap items-center gap-1.5 pt-1">
+                          {app.skills.map((skill, sIdx) => (
+                            <span
+                              key={sIdx}
+                              className="text-[10px] font-medium px-2 py-0.5 rounded bg-[#0b1e38] text-slate-300 border border-[#163354]"
+                            >
+                              {skill}
+                            </span>
+                          ))}
+                          <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-[#0e2748] text-cyan-400 border border-cyan-500/20">
+                            +{app.extraSkillsCount}
+                          </span>
+                        </div>
+                      </div>
                     </div>
-                  )}
 
-                  {/* Card Actions */}
-                  <div className="pt-2 flex items-center justify-between gap-3 border-t border-slate-800/80">
-                    <button
-                      onClick={() => handleWithdraw(app.id)}
-                      className="text-xs text-rose-400 hover:text-rose-300 font-semibold flex items-center gap-1.5 px-3 py-1.5 rounded-xl hover:bg-rose-500/10 transition"
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                      <span>Withdraw</span>
-                    </button>
+                    {/* Middle: Stepper Pipeline */}
+                    <div className="lg:w-5/12 space-y-2">
+                      <div className="flex items-center justify-between relative px-2">
+                        {/* Connecting Line behind dots */}
+                        <div className="absolute top-1/2 left-4 right-4 h-0.5 bg-[#0d2342] -translate-y-1/2 z-0" />
+                        
+                        {steps.map((step, sIdx) => {
+                          const isDone = sIdx <= app.currentStepIndex;
+                          const isCurrent = sIdx === app.currentStepIndex;
 
-                    <button
-                      onClick={() => setActiveModalApp(app)}
-                      className="px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs transition flex items-center gap-1.5 shadow-md"
-                    >
-                      <span>View Detailed Timeline</span>
-                      <ChevronRight className="w-4 h-4" />
-                    </button>
+                          return (
+                            <div key={step} className="flex flex-col items-center gap-1.5 relative z-10">
+                              <div
+                                className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold transition-all ${
+                                  isDone
+                                    ? "bg-cyan-500 text-slate-950 shadow-md shadow-cyan-500/30"
+                                    : "bg-[#061427] border border-[#1a3860] text-slate-500"
+                                }`}
+                              >
+                                {isDone ? (
+                                  <Check className="w-3.5 h-3.5 stroke-[3]" />
+                                ) : (
+                                  <span className="w-1.5 h-1.5 rounded-full bg-slate-600" />
+                                )}
+                              </div>
+                              <span
+                                className={`text-[10px] font-semibold ${
+                                  isCurrent
+                                    ? "text-cyan-300 font-bold"
+                                    : isDone
+                                    ? "text-slate-300"
+                                    : "text-slate-500"
+                                }`}
+                              >
+                                {step}
+                              </span>
+                            </div>
+                          );
+                        })}
+                      </div>
+
+                      {/* Sub-text below stepper: e.g. "2 days ago • 94 applicants" */}
+                      <div className="flex items-center justify-center gap-3 text-[11px] text-slate-400 pt-1">
+                        <span className="flex items-center gap-1">
+                          <Clock className="w-3 h-3 text-slate-500" />
+                          {app.timeAgo}
+                        </span>
+                        <span>•</span>
+                        <span>{app.applicantsCount} applicants</span>
+                      </div>
+                    </div>
+
+                    {/* Right: Match Score & View Details Button */}
+                    <div className="lg:w-3/12 flex items-center justify-between lg:justify-end gap-4 pt-3 lg:pt-0 border-t lg:border-t-0 border-[#122844]">
+                      {/* Match Score Indicator */}
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-10 h-10 rounded-full border-2 border-cyan-400 flex items-center justify-center bg-[#071933] shadow-md shadow-cyan-500/20 shrink-0">
+                          <span className="text-[11px] font-black text-cyan-300">{app.matchScore}%</span>
+                        </div>
+                        <div className="text-left">
+                          <div className="text-[10px] text-slate-400 font-medium leading-none">Match</div>
+                          <div className="text-[11px] text-cyan-300 font-bold flex items-center gap-0.5 mt-0.5">
+                            <Star className="w-3 h-3 fill-current text-cyan-400" />
+                            {app.matchLabel}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Action Button */}
+                      <button
+                        onClick={() => setSelectedApp(app)}
+                        className="px-4 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white text-xs font-bold shadow-lg shadow-cyan-500/20 transition-all flex items-center gap-1.5 shrink-0 hover:scale-[1.02] active:scale-[0.98]"
+                      >
+                        View Details
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+
                   </div>
-
                 </div>
-              ))}
-            </div>
-          )}
+              );
+            })}
+          </div>
 
         </main>
       </div>
 
-      {/* Detailed Application Modal */}
-      {activeModalApp && (
-        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-[#091022] border border-blue-500/40 rounded-3xl max-w-2xl w-full p-6 space-y-6 shadow-2xl max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in-95">
-            
-            {/* Modal Header */}
-            <div className="flex items-start justify-between border-b border-slate-800 pb-4">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-2xl bg-slate-800 border border-slate-700 flex items-center justify-center text-3xl shadow-inner">
-                  {activeModalApp.logo}
-                </div>
-                <div>
-                  <h2 className="text-lg font-extrabold text-white">{activeModalApp.role}</h2>
-                  <p className="text-xs text-cyan-400 font-semibold">{activeModalApp.company} • {activeModalApp.salary}</p>
-                </div>
-              </div>
-              <button 
-                onClick={() => setActiveModalApp(null)}
-                className="p-1.5 rounded-full bg-slate-900 border border-slate-800 text-slate-400 hover:text-white"
-              >
-                <X className="w-5 h-5" />
-              </button>
+      {/* Detail Modal */}
+      {selectedApp && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-[#07152b] border border-cyan-500/40 rounded-2xl max-w-lg w-full p-6 space-y-4 shadow-2xl relative">
+            <button
+              onClick={() => setSelectedApp(null)}
+              className="absolute top-4 right-4 text-slate-400 hover:text-white"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <div className="flex items-center gap-3">
+              <span className={`text-xs font-bold px-2.5 py-0.5 rounded-full border ${selectedApp.statusBadgeColor}`}>
+                {selectedApp.statusLabel}
+              </span>
+              <span className="text-xs text-slate-400 font-medium">Applied {selectedApp.timeAgo}</span>
             </div>
 
-            {/* Application Overview Box */}
-            <div className="p-4 rounded-2xl bg-[#0d162d] border border-slate-800 space-y-2 text-xs text-slate-300">
-              <div className="flex justify-between border-b border-slate-800 pb-2">
-                <span className="text-slate-400 font-medium">Applied Date:</span>
-                <span className="font-semibold text-white">{activeModalApp.appliedDate}</span>
-              </div>
-              <div className="flex justify-between border-b border-slate-800 pb-2">
-                <span className="text-slate-400 font-medium">Location & Work Mode:</span>
-                <span className="font-semibold text-white">{activeModalApp.location}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-slate-400 font-medium">Verified AI Skill Fit:</span>
-                <span className="font-bold text-cyan-400">{activeModalApp.matchScore}% Match Index</span>
-              </div>
-            </div>
+            <h3 className="text-lg font-bold text-white">
+              {selectedApp.role}
+            </h3>
+            <p className="text-xs text-slate-300">
+              {selectedApp.company} • {selectedApp.type} • {selectedApp.location}
+            </p>
 
-            {/* Stepper Timeline Breakdown */}
-            <div className="space-y-3">
-              <h3 className="text-xs font-extrabold text-slate-300 uppercase tracking-wider">Application Timeline History</h3>
-              <div className="space-y-3 pl-2 border-l-2 border-slate-800 ml-2">
-                {stepsList.map((step, idx) => {
-                  const isDone = idx <= activeModalApp.currentStepIndex;
-                  const isCurrent = idx === activeModalApp.currentStepIndex;
-
-                  return (
-                    <div key={idx} className="relative pl-6 space-y-1">
-                      <div className={`absolute -left-[9px] top-0.5 w-4 h-4 rounded-full border-2 flex items-center justify-center ${
-                        isDone ? "bg-cyan-500 border-cyan-400 text-slate-950" : "bg-slate-900 border-slate-700 text-transparent"
-                      }`}>
-                        {isDone && <CheckCircle2 className="w-3 h-3 text-slate-950 fill-cyan-400" />}
-                      </div>
-
-                      <div className="flex items-center justify-between">
-                        <span className={`text-xs font-bold ${isCurrent ? "text-cyan-300" : isDone ? "text-white" : "text-slate-500"}`}>
-                          {step.title}
-                        </span>
-                        {isDone && (
-                          <span className="text-[10px] text-slate-500">Verified Step</span>
-                        )}
-                      </div>
-                      <p className="text-[11px] text-slate-400">{step.desc}</p>
+            {/* Stepper overview */}
+            <div className="p-4 rounded-xl bg-[#040c1a] border border-[#142e4e] space-y-3">
+              <div className="text-xs font-bold text-white">Application Pipeline Stage</div>
+              <div className="flex items-center justify-between text-xs">
+                {steps.map((st, i) => (
+                  <div key={st} className="flex flex-col items-center gap-1">
+                    <div className={`w-5 h-5 rounded-full flex items-center justify-center text-[9px] ${
+                      i <= selectedApp.currentStepIndex ? "bg-cyan-500 text-slate-950 font-bold" : "bg-slate-800 text-slate-500"
+                    }`}>
+                      {i + 1}
                     </div>
-                  );
-                })}
+                    <span className="text-[9px] text-slate-400">{st}</span>
+                  </div>
+                ))}
               </div>
             </div>
 
-            {/* Recruiter Notes / Interview Schedule */}
-            {activeModalApp.interviewDate && (
-              <div className="p-4 rounded-2xl bg-amber-950/30 border border-amber-500/40 space-y-2">
-                <div className="flex items-center gap-2 text-xs font-bold text-amber-400">
-                  <Calendar className="w-4 h-4" />
-                  <span>Interview Session Details</span>
-                </div>
-                <p className="text-xs text-slate-200">
-                  <strong>Date & Time:</strong> {activeModalApp.interviewDate}
-                </p>
-                <button className="px-4 py-2 rounded-xl bg-amber-500 text-slate-950 font-bold text-xs hover:bg-amber-400 transition flex items-center gap-1.5 mt-2">
-                  <span>Open Video Meeting Room</span>
-                  <ExternalLink className="w-3.5 h-3.5" />
-                </button>
-              </div>
-            )}
+            <div className="flex items-center justify-between text-xs text-slate-400">
+              <span>Match Rating: <strong className="text-cyan-400">{selectedApp.matchScore}% ({selectedApp.matchLabel})</strong></span>
+              <span>Total Applicants: <strong className="text-white">{selectedApp.applicantsCount}</strong></span>
+            </div>
 
-            {/* Modal Actions */}
-            <div className="pt-4 border-t border-slate-800 flex items-center justify-between">
+            <div className="pt-2 flex gap-3">
               <button
-                onClick={() => handleWithdraw(activeModalApp.id)}
-                className="text-xs text-rose-400 hover:underline font-semibold"
+                onClick={() => {
+                  alert(`Withdraw request submitted for ${selectedApp.role}`);
+                  setSelectedApp(null);
+                }}
+                className="flex-1 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold"
               >
                 Withdraw Application
               </button>
-
               <button
-                onClick={() => setActiveModalApp(null)}
-                className="px-6 py-2.5 rounded-xl bg-blue-600 text-white font-bold text-xs hover:bg-blue-500 transition"
+                onClick={() => setSelectedApp(null)}
+                className="flex-1 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-xs font-bold"
               >
-                Done
+                Close
               </button>
             </div>
-
           </div>
         </div>
       )}

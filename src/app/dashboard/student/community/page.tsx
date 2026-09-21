@@ -4,659 +4,576 @@ import Link from "next/link";
 import DashboardSidebar from "@/components/dashboard/Sidebar";
 import DashboardHeader from "@/components/dashboard/Header";
 import { 
-  Users, MessageSquare, ThumbsUp, PlusCircle, Sparkles, 
-  Search, Filter, Flame, Trophy, Award, Tag, Code2, 
-  Share2, CheckCircle2, UserPlus, ArrowRight, MessageCircle, X
+  Users, MessageSquare, ThumbsUp, Image as ImageIcon, Link as LinkIcon, 
+  Send, SlidersHorizontal, Filter, MoreVertical, ArrowRight, 
+  Code2, Brain, Database, Cloud, Shield, ChevronRight, Sparkles, 
+  X, Check, Flame, MessageCircle, Trophy
 } from "lucide-react";
 
-interface DiscussionPost {
+interface PostItem {
   id: string;
   author: string;
-  avatar: string;
-  role: string;
+  avatarInitials: string;
+  avatarBg: string;
+  timeAgo: string;
+  category: "Discussion" | "Question" | "Project Share" | "Mentorship" | "Events";
+  tags: string[];
   title: string;
   content: string;
-  tags: string[];
   upvotes: number;
   commentsCount: number;
-  timeAgo: string;
+  actionLabel: string;
   isUpvoted?: boolean;
 }
 
-interface ProjectCollab {
-  id: string;
-  title: string;
-  leader: string;
-  avatar: string;
-  description: string;
-  requiredSkills: string[];
-  membersJoined: number;
-  maxMembers: number;
-  isJoined?: boolean;
-}
-
-interface StudyCircle {
-  id: string;
-  name: string;
-  icon: string;
-  members: number;
-  schedule: string;
-  focusTopic: string;
-  isMember?: boolean;
-}
-
 export default function CommunityPage() {
-  const [activeTab, setActiveTab] = useState<"discussions" | "projects" | "circles" | "leaderboard">("discussions");
-  const [search, setSearch] = useState("");
-  const [selectedTag, setSelectedTag] = useState("all");
-  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [activeTab, setActiveTab] = useState<string>("All Posts");
+  const [sortBy, setSortBy] = useState<string>("latest");
+  const [newPostText, setNewPostText] = useState("");
+  const [activePostModal, setActivePostModal] = useState<PostItem | null>(null);
 
-  // New post modal form state
-  const [newTitle, setNewTitle] = useState("");
-  const [newContent, setNewContent] = useState("");
-  const [newTag, setNewTag] = useState("WebDev");
-
-  const [posts, setPosts] = useState<DiscussionPost[]>([
+  const [posts, setPosts] = useState<PostItem[]>([
     {
       id: "post_1",
       author: "Priya Nair",
-      avatar: "PN",
-      role: "AI Student • Pune",
-      title: "How to effectively fine-tune PyTorch models for retrieval-augmented generation (RAG)?",
+      avatarInitials: "PN",
+      avatarBg: "bg-purple-600",
+      timeAgo: "2h ago",
+      category: "Discussion",
+      tags: ["#AI"],
+      title: "How to effectively fine-tune Pytfch models for retrieval-augmented generation (RAG)?",
       content: "I am building a domain-specific Q&A bot using LangChain and Qdrant. What are the best quantization practices when running on single T4 GPUs?",
-      tags: ["AIML", "PyTorch", "RAG"],
       upvotes: 42,
       commentsCount: 18,
-      timeAgo: "2 hours ago",
-      isUpvoted: false
+      actionLabel: "Join Discussion"
     },
     {
       id: "post_2",
       author: "Rahul Mehta",
-      avatar: "RM",
-      role: "DevOps Engineer Aspirant",
-      title: "Docker vs Podman in 2026 enterprise microservices — What should freshers focus on?",
+      avatarInitials: "RM",
+      avatarBg: "bg-blue-600",
+      timeAgo: "5h ago",
+      category: "Question",
+      tags: ["#DevOps", "#Docker", "#CareerAdvice"],
+      title: "Docker vs Podman in 2026 enterprise microservices – What should freshers focus on?",
       content: "Many modern cloud internships ask for rootless containerization. Should I prioritize Podman CLI over traditional Docker Desktop?",
-      tags: ["DevOps", "Docker", "CareerAdvice"],
       upvotes: 28,
       commentsCount: 11,
-      timeAgo: "5 hours ago",
-      isUpvoted: false
+      actionLabel: "View Answers"
     },
     {
       id: "post_3",
       author: "Sneha Patel",
-      avatar: "SP",
-      role: "Frontend Dev • NITK",
+      avatarInitials: "SP",
+      avatarBg: "bg-violet-600",
+      timeAgo: "1d ago",
+      category: "Project Share",
+      tags: ["#WebDev", "#Nextjs", "#React"],
       title: "Mastering Next.js 15 Server Actions & Optimistic UI State",
       content: "Just published a step-by-step breakdown on building zero-lag UI updates using optimistic updates in React 19 server components!",
-      tags: ["WebDev", "Nextjs", "React"],
       upvotes: 65,
       commentsCount: 24,
-      timeAgo: "1 day ago",
-      isUpvoted: true
+      actionLabel: "Read More"
     }
   ]);
 
-  const [collabs, setCollabs] = useState<ProjectCollab[]>([
-    {
-      id: "collab_1",
-      title: "AI Resume & Portfolio Synthesizer (SIH Hackathon)",
-      leader: "Arjun Magre",
-      avatar: "AM",
-      description: "Building an automated vector embedding parser for student github profiles and live resume generation.",
-      requiredSkills: ["Next.js", "Python", "Vector DBs"],
-      membersJoined: 3,
-      maxMembers: 4,
-      isJoined: true
-    },
-    {
-      id: "collab_2",
-      title: "Distributed Redis Clone in Go",
-      leader: "Karthik Reddy",
-      avatar: "KR",
-      description: "Creating an open-source high-concurrency key-value store supporting RESP protocol and TCP clustering.",
-      requiredSkills: ["Go / Systems", "Networking", "System Design"],
-      membersJoined: 2,
-      maxMembers: 3,
-      isJoined: false
-    },
-    {
-      id: "collab_3",
-      title: "FinTech Automated Expense Tracker Chrome Extension",
-      leader: "Anjali Singh",
-      avatar: "AS",
-      description: "Building a lightweight browser plugin that parses transaction receipts into categorized budget analytics.",
-      requiredSkills: ["TypeScript", "React", "TailwindCSS"],
-      membersJoined: 1,
-      maxMembers: 3,
-      isJoined: false
-    }
-  ]);
-
-  const [circles, setCircles] = useState<StudyCircle[]>([
-    {
-      id: "circle_1",
-      name: "LeetCode 75 & DSA Daily Challenge",
-      icon: "🧠",
-      members: 420,
-      schedule: "Daily at 8:00 PM IST",
-      focusTopic: "Arrays, Dynamic Programming & Graphs",
-      isMember: true
-    },
-    {
-      id: "circle_2",
-      name: "System Design & Microservices Workshop",
-      icon: "🏗️",
-      members: 310,
-      schedule: "Every Saturday at 5:00 PM IST",
-      focusTopic: "Load Balancing, Caching & Kafka Queues",
-      isMember: true
-    },
-    {
-      id: "circle_3",
-      name: "LLM Fine-Tuning & Vector DB Explorers",
-      icon: "🤖",
-      members: 245,
-      schedule: "Bi-weekly Wednesdays",
-      focusTopic: "Qdrant, LangChain, Transformers",
-      isMember: false
-    }
-  ]);
-
-  const leaderboard = [
-    { rank: 1, name: "Karthik Reddy", college: "NITK Surathkal", iq: 93, points: 4100, streak: 45, badge: "👑 Top Performer" },
-    { rank: 2, name: "Priya Nair", college: "COEP Pune", iq: 91, points: 3200, streak: 24, badge: "⭐ AI Champion" },
-    { rank: 3, name: "Arjun Magre (You)", college: "NITK Surathkal", iq: 84, points: 2450, streak: 12, badge: "🔥 Placement Ready" },
-    { rank: 4, name: "Dev Kapoor", college: "IIT Bombay", iq: 79, points: 2080, streak: 18, badge: "💻 Full Stack Pro" },
-    { rank: 5, name: "Rahul Mehta", college: "VJTI Mumbai", iq: 74, points: 1680, streak: 5, badge: "⚡ Cloud Novice" }
-  ];
-
-  const handleToggleUpvote = (id: string) => {
-    setPosts(posts.map(p => {
-      if (p.id === id) {
+  const handleUpvote = (id: string) => {
+    setPosts(prev => prev.map(post => {
+      if (post.id === id) {
         return {
-          ...p,
-          upvotes: p.isUpvoted ? p.upvotes - 1 : p.upvotes + 1,
-          isUpvoted: !p.isUpvoted
+          ...post,
+          upvotes: post.isUpvoted ? post.upvotes - 1 : post.upvotes + 1,
+          isUpvoted: !post.isUpvoted
         };
       }
-      return p;
-    }));
-  };
-
-  const handleToggleCollab = (id: string) => {
-    setCollabs(collabs.map(c => {
-      if (c.id === id) {
-        const nextJoined = !c.isJoined;
-        return {
-          ...c,
-          isJoined: nextJoined,
-          membersJoined: nextJoined ? c.membersJoined + 1 : c.membersJoined - 1
-        };
-      }
-      return c;
-    }));
-  };
-
-  const handleToggleCircle = (id: string) => {
-    setCircles(circles.map(c => {
-      if (c.id === id) {
-        const nextJoined = !c.isMember;
-        return {
-          ...c,
-          isMember: nextJoined,
-          members: nextJoined ? c.members + 1 : c.members - 1
-        };
-      }
-      return c;
+      return post;
     }));
   };
 
   const handleCreatePost = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newTitle || !newContent) return;
+    if (!newPostText.trim()) return;
 
-    const created: DiscussionPost = {
-      id: "post_" + Date.now(),
-      author: "Arjun Magre",
-      avatar: "AM",
-      role: "Student • Pune",
-      title: newTitle,
-      content: newContent,
-      tags: [newTag],
+    const newPost: PostItem = {
+      id: `post_${Date.now()}`,
+      author: "Anjani Magre",
+      avatarInitials: "AM",
+      avatarBg: "bg-blue-600",
+      timeAgo: "Just now",
+      category: "Discussion",
+      tags: ["#Community"],
+      title: newPostText.slice(0, 60) + (newPostText.length > 60 ? "..." : ""),
+      content: newPostText,
       upvotes: 1,
       commentsCount: 0,
-      timeAgo: "Just now",
+      actionLabel: "Join Discussion",
       isUpvoted: true
     };
 
-    setPosts([created, ...posts]);
-    setNewTitle("");
-    setNewContent("");
-    setShowCreateModal(false);
+    setPosts([newPost, ...posts]);
+    setNewPostText("");
   };
 
-  const filteredPosts = posts.filter(post => {
-    const matchesSearch = post.title.toLowerCase().includes(search.toLowerCase()) || 
-                          post.content.toLowerCase().includes(search.toLowerCase());
-    const matchesTag = selectedTag === "all" || post.tags.some(t => t.toLowerCase() === selectedTag.toLowerCase());
+  const tabs = ["All Posts", "Discussions", "Q&A", "Project Sharing", "Mentorship", "Events"];
 
-    return matchesSearch && matchesTag;
+  const filteredPosts = posts.filter(post => {
+    if (activeTab === "All Posts") return true;
+    if (activeTab === "Discussions") return post.category === "Discussion";
+    if (activeTab === "Q&A") return post.category === "Question";
+    if (activeTab === "Project Sharing") return post.category === "Project Share";
+    if (activeTab === "Mentorship") return post.category === "Mentorship";
+    if (activeTab === "Events") return post.category === "Events";
+    return true;
   });
 
   return (
-    <div className="min-h-screen bg-[#060911] text-slate-100 flex font-sans">
+    <div className="min-h-screen bg-[#030712] text-slate-100 flex font-sans">
       <DashboardSidebar role="STUDENT" />
 
       <div className="flex-1 flex flex-col min-w-0">
-        <DashboardHeader 
-          title="Student Community & Circles" 
-          subtitle="Connect with peers, collaborate on projects, join study groups, and showcase skills."
-        />
+        <DashboardHeader />
 
-        <main className="p-6 space-y-6 overflow-y-auto">
+        <main className="p-5 md:p-7 space-y-6 overflow-y-auto">
           
-          {/* Community Hero Card */}
-          <div className="relative rounded-3xl overflow-hidden border border-blue-500/30 p-6 bg-gradient-to-r from-[#0a142e] via-[#0d1c42] to-[#071126] shadow-2xl">
-            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 relative z-10">
-              <div className="space-y-2">
-                <div className="flex items-center gap-2">
-                  <span className="px-3 py-1 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 text-xs font-bold flex items-center gap-1.5">
-                    <Users className="w-3.5 h-3.5 text-cyan-400" />
-                    2,450+ Active Engineers & Students
-                  </span>
+          {/* Main 2-Column Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+            {/* LEFT COLUMN: Hero + Composer + Posts Feed (approx 8 cols) */}
+            <div className="lg:col-span-8 space-y-5">
+              
+              {/* Hero Banner */}
+              <div className="relative rounded-2xl overflow-hidden border border-[#163354] bg-gradient-to-r from-[#07152b] via-[#091e3d] to-[#0a2347] p-6 md:p-8 shadow-xl">
+                <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+                  
+                  <div className="space-y-2 max-w-lg">
+                    <div className="flex items-center gap-3">
+                      <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-blue-600 to-cyan-500 flex items-center justify-center shadow-lg shadow-cyan-500/20 text-white">
+                        <Users className="w-6 h-6" />
+                      </div>
+                      <div>
+                        <h1 className="text-2xl md:text-3xl font-extrabold text-white tracking-tight">
+                          Community
+                        </h1>
+                      </div>
+                    </div>
+                    <p className="text-xs md:text-sm text-slate-300 leading-relaxed pl-1">
+                      Connect, discuss, and grow with fellow learners, experts, and industry professionals.
+                    </p>
+                  </div>
+
+                  {/* Right speech bubbles badge */}
+                  <div className="hidden sm:flex shrink-0 p-3.5 rounded-2xl bg-[#0a1f3d] border border-cyan-500/30 flex items-center gap-3 shadow-lg">
+                    <div className="w-9 h-9 rounded-xl bg-cyan-500/20 flex items-center justify-center text-cyan-400">
+                      <MessageSquare className="w-5 h-5" />
+                    </div>
+                    <div className="text-xs font-bold text-slate-200">
+                      <div>Real Questions.</div>
+                      <div className="text-cyan-400">Real People.</div>
+                      <div className="text-white">Real Growth.</div>
+                    </div>
+                  </div>
+
                 </div>
-                <h1 className="text-xl md:text-2xl font-extrabold text-white tracking-tight">
-                  Learn Together, Build Faster
-                </h1>
-                <p className="text-xs text-slate-300 max-w-2xl leading-relaxed">
-                  Join specialized skill circles, ask technical questions, find hackathon teammates, and get real-time feedback from top industry mentors.
-                </p>
               </div>
 
-              <button
-                onClick={() => setShowCreateModal(true)}
-                className="px-5 py-3 rounded-2xl bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white font-bold text-xs transition shadow-lg shadow-cyan-500/20 flex items-center gap-2 shrink-0 self-start lg:self-center"
-              >
-                <PlusCircle className="w-4 h-4" />
-                <span>Start Discussion / Project</span>
-              </button>
-            </div>
-          </div>
-
-          {/* Main Navigation Tabs */}
-          <div className="flex items-center justify-between border-b border-slate-800 pb-1">
-            <div className="flex items-center gap-2 overflow-x-auto">
-              {[
-                { id: "discussions", label: "Discussions & Q&A", icon: MessageSquare },
-                { id: "projects", label: "Project Collaborations", icon: Code2 },
-                { id: "circles", label: "Study Circles", icon: Users },
-                { id: "leaderboard", label: "Talent Leaderboard", icon: Trophy },
-              ].map((tab) => {
-                const IconComp = tab.icon;
-                const isActive = activeTab === tab.id;
-
-                return (
-                  <button
-                    key={tab.id}
-                    onClick={() => setActiveTab(tab.id as any)}
-                    className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition whitespace-nowrap ${
-                      isActive
-                        ? "bg-blue-600/30 text-cyan-300 border border-cyan-500/40 shadow-md"
-                        : "text-slate-400 hover:text-slate-200 hover:bg-slate-900"
-                    }`}
-                  >
-                    <IconComp className={`w-4 h-4 ${isActive ? "text-cyan-400" : "text-slate-400"}`} />
-                    <span>{tab.label}</span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* TAB 1: DISCUSSIONS & Q&A */}
-          {activeTab === "discussions" && (
-            <div className="space-y-6">
-              
-              {/* Search & Tag Filter Bar */}
-              <div className="p-4 rounded-2xl bg-[#091022] border border-blue-900/60 shadow-xl flex flex-col md:flex-row gap-4 items-center justify-between">
-                <div className="flex items-center gap-2 bg-[#0e1626] border border-slate-800 rounded-xl px-3.5 py-2.5 w-full md:w-96 focus-within:border-cyan-500 transition">
-                  <Search className="w-4 h-4 text-slate-400" />
-                  <input
-                    type="text"
-                    placeholder="Search discussions or questions..."
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    className="bg-transparent text-xs text-white placeholder-slate-400 focus:outline-none w-full"
-                  />
-                </div>
-
-                <div className="flex flex-wrap items-center gap-1.5">
-                  {["all", "WebDev", "AIML", "DevOps", "CareerAdvice"].map((tag) => (
+              {/* Filter Tabs & Sort Controls */}
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div className="flex items-center gap-1.5 bg-[#050e1d] p-1 rounded-xl border border-[#142847] overflow-x-auto max-w-full">
+                  {tabs.map((tab) => (
                     <button
-                      key={tag}
-                      onClick={() => setSelectedTag(tag)}
-                      className={`px-3 py-1.5 rounded-lg text-xs font-bold capitalize transition ${
-                        selectedTag === tag
-                          ? "bg-cyan-500/20 text-cyan-300 border border-cyan-500/40"
-                          : "bg-[#0e1626] text-slate-400 border border-slate-800 hover:text-slate-200"
+                      key={tab}
+                      onClick={() => setActiveTab(tab)}
+                      className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all ${
+                        activeTab === tab
+                          ? "bg-[#0b284d] text-cyan-300 border border-cyan-500/30 shadow-sm"
+                          : "text-slate-400 hover:text-white"
                       }`}
                     >
-                      #{tag}
+                      {tab}
                     </button>
                   ))}
                 </div>
+
+                <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 bg-[#050e1d] border border-[#142847] px-3 py-1.5 rounded-xl text-xs text-slate-300">
+                    <SlidersHorizontal className="w-3.5 h-3.5 text-cyan-400" />
+                    <select
+                      value={sortBy}
+                      onChange={(e) => setSortBy(e.target.value)}
+                      className="bg-transparent text-xs text-white focus:outline-none cursor-pointer font-medium"
+                    >
+                      <option value="latest" className="bg-[#050e1d] text-white">Latest</option>
+                      <option value="popular" className="bg-[#050e1d] text-white">Most Popular</option>
+                    </select>
+                  </div>
+
+                  <button 
+                    onClick={() => alert("Filters dialog opened")}
+                    className="flex items-center gap-1.5 px-3 py-1.5 bg-[#050e1d] border border-[#142847] hover:border-cyan-500/40 rounded-xl text-xs text-slate-300 transition-colors"
+                  >
+                    <Filter className="w-3.5 h-3.5 text-cyan-400" />
+                    <span>Filters</span>
+                  </button>
+                </div>
               </div>
 
-              {/* Feed List */}
+              {/* Post Composer Bar */}
+              <form 
+                onSubmit={handleCreatePost}
+                className="p-3.5 rounded-2xl bg-[#061224] border border-[#132c4e] flex items-center gap-3 shadow-lg"
+              >
+                {/* User Avatar */}
+                <div className="w-9 h-9 rounded-full bg-blue-600 flex items-center justify-center text-xs font-bold text-white shrink-0">
+                  AM
+                </div>
+
+                <input
+                  type="text"
+                  value={newPostText}
+                  onChange={(e) => setNewPostText(e.target.value)}
+                  placeholder="Share your thoughts, ask a question, or start a discussion..."
+                  className="flex-1 bg-transparent text-xs text-white placeholder-slate-400 focus:outline-none"
+                />
+
+                <div className="flex items-center gap-2 shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => alert("Upload image attached")}
+                    className="p-1.5 rounded-lg text-slate-400 hover:text-cyan-400 hover:bg-[#0b1f3b] transition"
+                  >
+                    <ImageIcon className="w-4 h-4" />
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => alert("Attach link")}
+                    className="p-1.5 rounded-lg text-slate-400 hover:text-cyan-400 hover:bg-[#0b1f3b] transition"
+                  >
+                    <LinkIcon className="w-4 h-4" />
+                  </button>
+
+                  <button
+                    type="submit"
+                    className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-600 to-cyan-500 text-white flex items-center justify-center hover:scale-105 active:scale-95 transition shadow-md shadow-cyan-500/20"
+                  >
+                    <Send className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              </form>
+
+              {/* Feed Post List */}
               <div className="space-y-4">
-                {filteredPosts.map((post) => (
-                  <div
-                    key={post.id}
-                    className="p-5 rounded-3xl bg-[#091022] border border-blue-900/60 hover:border-cyan-500/50 transition-all space-y-4 shadow-xl"
-                  >
-                    <div className="flex items-start justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-blue-600 text-white font-bold flex items-center justify-center text-xs shadow-md">
-                          {post.avatar}
+                {filteredPosts.map((post) => {
+                  return (
+                    <div
+                      key={post.id}
+                      className="p-5 rounded-2xl bg-[#061224] border border-[#132c4e] hover:border-cyan-500/40 transition-all duration-300 shadow-lg space-y-3"
+                    >
+                      {/* Post Header: Avatar, Name, Time, Category, Tag, Menu */}
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex items-center gap-3">
+                          <div className={`w-10 h-10 rounded-full ${post.avatarBg} flex items-center justify-center text-xs font-bold text-white shadow shrink-0`}>
+                            {post.avatarInitials}
+                          </div>
+                          <div>
+                            <div className="text-xs font-bold text-white flex items-center gap-1.5">
+                              {post.author}
+                            </div>
+                            <div className="text-[11px] text-slate-400">
+                              {post.timeAgo} • {post.category}
+                            </div>
+                          </div>
                         </div>
-                        <div>
-                          <h4 className="text-xs font-bold text-white">{post.author}</h4>
-                          <p className="text-[10px] text-slate-400">{post.role} • {post.timeAgo}</p>
+
+                        <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-1">
+                            {post.tags.map((tag) => (
+                              <span
+                                key={tag}
+                                className="text-[11px] font-semibold px-2 py-0.5 rounded bg-[#0b254a] text-cyan-300 border border-cyan-500/20"
+                              >
+                                {tag}
+                              </span>
+                            ))}
+                          </div>
+
+                          <button className="text-slate-400 hover:text-white p-1">
+                            <MoreVertical className="w-4 h-4" />
+                          </button>
                         </div>
                       </div>
 
-                      <div className="flex items-center gap-1.5">
-                        {post.tags.map((t) => (
-                          <span key={t} className="text-[10px] font-semibold px-2.5 py-0.5 rounded-full bg-blue-600/20 text-cyan-300 border border-blue-500/30">
-                            #{t}
-                          </span>
-                        ))}
+                      {/* Post Title & Content */}
+                      <div>
+                        <h2 className="text-sm font-bold text-white hover:text-cyan-300 transition-colors cursor-pointer"
+                          onClick={() => setActivePostModal(post)}
+                        >
+                          {post.title}
+                        </h2>
+                        <p className="text-xs text-slate-300 mt-1 leading-relaxed">
+                          {post.content}
+                        </p>
+                      </div>
+
+                      {/* Post Footer: Upvotes, Comments, Action Button */}
+                      <div className="pt-2 border-t border-[#122844] flex items-center justify-between gap-3">
+                        <div className="flex items-center gap-4 text-xs text-slate-400">
+                          <button
+                            onClick={() => handleUpvote(post.id)}
+                            className={`flex items-center gap-1.5 font-medium transition-colors ${
+                              post.isUpvoted ? "text-cyan-400" : "hover:text-white"
+                            }`}
+                          >
+                            <ThumbsUp className={`w-3.5 h-3.5 ${post.isUpvoted ? "fill-current" : ""}`} />
+                            <span>{post.upvotes} Upvotes</span>
+                          </button>
+
+                          <button 
+                            onClick={() => setActivePostModal(post)}
+                            className="flex items-center gap-1.5 font-medium hover:text-white transition-colors"
+                          >
+                            <MessageCircle className="w-3.5 h-3.5" />
+                            <span>{post.commentsCount} Comments</span>
+                          </button>
+                        </div>
+
+                        <button
+                          onClick={() => setActivePostModal(post)}
+                          className="px-4 py-1.5 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white text-xs font-bold shadow-md shadow-cyan-500/20 transition-all flex items-center gap-1.5 hover:scale-[1.02] active:scale-[0.98]"
+                        >
+                          {post.actionLabel}
+                          <ArrowRight className="w-3.5 h-3.5" />
+                        </button>
                       </div>
                     </div>
-
-                    <div className="space-y-1.5">
-                      <h3 className="text-sm font-bold text-white hover:text-cyan-300 cursor-pointer transition leading-snug">
-                        {post.title}
-                      </h3>
-                      <p className="text-xs text-slate-300 leading-relaxed">
-                        {post.content}
-                      </p>
-                    </div>
-
-                    <div className="pt-3 border-t border-slate-800/80 flex items-center gap-4 text-xs text-slate-400">
-                      <button
-                        onClick={() => handleToggleUpvote(post.id)}
-                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border transition ${
-                          post.isUpvoted
-                            ? "bg-cyan-500/20 text-cyan-300 border-cyan-500/40"
-                            : "bg-[#0e1626] border-slate-800 hover:text-slate-200"
-                        }`}
-                      >
-                        <ThumbsUp className={`w-3.5 h-3.5 ${post.isUpvoted ? "fill-cyan-400" : ""}`} />
-                        <span className="font-bold">{post.upvotes} Upvotes</span>
-                      </button>
-
-                      <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#0e1626] border border-slate-800">
-                        <MessageSquare className="w-3.5 h-3.5 text-slate-400" />
-                        <span>{post.commentsCount} Comments</span>
-                      </div>
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
+
             </div>
-          )}
 
-          {/* TAB 2: PROJECT COLLABORATIONS */}
-          {activeTab === "projects" && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {collabs.map((collab) => (
-                <div
-                  key={collab.id}
-                  className="p-6 rounded-3xl bg-[#091022] border border-blue-900/60 hover:border-cyan-500/50 transition-all flex flex-col justify-between space-y-4 shadow-xl"
-                >
-                  <div className="space-y-3">
-                    <div className="flex items-start justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-purple-600 text-white font-bold flex items-center justify-center text-xs shadow-md">
-                          {collab.avatar}
-                        </div>
-                        <div>
-                          <h4 className="text-xs font-bold text-white">{collab.leader}</h4>
-                          <p className="text-[10px] text-slate-400">Project Owner</p>
-                        </div>
+            {/* RIGHT COLUMN: Featured Communities + Top Contributors + CTA (approx 4 cols) */}
+            <div className="lg:col-span-4 space-y-5">
+              
+              {/* Widget 1: Featured Communities */}
+              <div className="p-5 rounded-2xl bg-[#061224] border border-[#132c4e] space-y-4 shadow-lg">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2 text-white font-bold text-xs">
+                    <Users className="w-4 h-4 text-cyan-400" />
+                    Featured Communities
+                  </div>
+                  <button className="text-[11px] text-cyan-400 hover:underline flex items-center gap-0.5">
+                    View All <ChevronRight className="w-3 h-3" />
+                  </button>
+                </div>
+
+                <div className="space-y-3">
+                  {/* Comm 1 */}
+                  <div className="flex items-center justify-between p-2 rounded-xl hover:bg-[#091b36] transition cursor-pointer">
+                    <div className="flex items-center gap-3">
+                      <div className="w-9 h-9 rounded-xl bg-purple-600/20 border border-purple-500/30 flex items-center justify-center text-purple-400">
+                        <Code2 className="w-4 h-4" />
                       </div>
-
-                      <span className="text-[10px] font-bold px-2.5 py-1 rounded-full bg-blue-600/20 text-cyan-300 border border-blue-500/30">
-                        {collab.membersJoined}/{collab.maxMembers} Members
-                      </span>
-                    </div>
-
-                    <h3 className="text-sm font-bold text-white leading-snug">{collab.title}</h3>
-                    <p className="text-xs text-slate-300 leading-relaxed">{collab.description}</p>
-
-                    <div className="space-y-1 pt-1">
-                      <p className="text-[10px] uppercase font-bold text-slate-400">Required Skill Set:</p>
-                      <div className="flex flex-wrap gap-1">
-                        {collab.requiredSkills.map((sk) => (
-                          <span key={sk} className="text-[10px] font-semibold px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">
-                            ⚡ {sk}
-                          </span>
-                        ))}
+                      <div>
+                        <div className="text-xs font-bold text-white">Web Development</div>
+                        <div className="text-[10px] text-slate-400">12.4k members</div>
                       </div>
                     </div>
                   </div>
 
-                  <button
-                    onClick={() => handleToggleCollab(collab.id)}
-                    className={`w-full py-2.5 rounded-xl font-bold text-xs transition flex items-center justify-center gap-2 ${
-                      collab.isJoined
-                        ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
-                        : "bg-blue-600 hover:bg-blue-500 text-white shadow-md"
-                    }`}
-                  >
-                    {collab.isJoined ? (
-                      <>
-                        <CheckCircle2 className="w-4 h-4" />
-                        <span>Joined Team</span>
-                      </>
-                    ) : (
-                      <>
-                        <UserPlus className="w-4 h-4" />
-                        <span>Apply to Join Team</span>
-                      </>
-                    )}
-                  </button>
-                </div>
-              ))}
-            </div>
-          )}
-
-          {/* TAB 3: STUDY CIRCLES */}
-          {activeTab === "circles" && (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {circles.map((circle) => (
-                <div
-                  key={circle.id}
-                  className="p-6 rounded-3xl bg-[#091022] border border-blue-900/60 hover:border-cyan-500/50 transition-all flex flex-col justify-between space-y-4 shadow-xl text-center"
-                >
-                  <div className="space-y-3">
-                    <div className="w-14 h-14 rounded-2xl bg-blue-600/20 border border-cyan-500/40 text-3xl flex items-center justify-center mx-auto shadow-inner">
-                      {circle.icon}
-                    </div>
-
-                    <div>
-                      <h3 className="text-sm font-bold text-white">{circle.name}</h3>
-                      <p className="text-xs text-cyan-400 font-medium mt-1">{circle.members} Active Peers</p>
-                    </div>
-
-                    <div className="p-3 rounded-2xl bg-[#0d162d] border border-slate-800 text-left space-y-1 text-xs text-slate-300">
-                      <p><strong className="text-white">Schedule:</strong> {circle.schedule}</p>
-                      <p><strong className="text-white">Focus:</strong> {circle.focusTopic}</p>
+                  {/* Comm 2 */}
+                  <div className="flex items-center justify-between p-2 rounded-xl hover:bg-[#091b36] transition cursor-pointer">
+                    <div className="flex items-center gap-3">
+                      <div className="w-9 h-9 rounded-xl bg-teal-600/20 border border-teal-500/30 flex items-center justify-center text-teal-400">
+                        <Brain className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <div className="text-xs font-bold text-white">AI & Machine Learning</div>
+                        <div className="text-[10px] text-slate-400">10.8k members</div>
+                      </div>
                     </div>
                   </div>
 
-                  <button
-                    onClick={() => handleToggleCircle(circle.id)}
-                    className={`w-full py-2.5 rounded-xl font-bold text-xs transition flex items-center justify-center gap-2 ${
-                      circle.isMember
-                        ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
-                        : "bg-blue-600 hover:bg-blue-500 text-white shadow-md"
-                    }`}
-                  >
-                    {circle.isMember ? (
-                      <>
-                        <CheckCircle2 className="w-4 h-4" />
-                        <span>Member Joined</span>
-                      </>
-                    ) : (
-                      <>
-                        <Users className="w-4 h-4" />
-                        <span>Join Study Circle</span>
-                      </>
-                    )}
+                  {/* Comm 3 */}
+                  <div className="flex items-center justify-between p-2 rounded-xl hover:bg-[#091b36] transition cursor-pointer">
+                    <div className="flex items-center gap-3">
+                      <div className="w-9 h-9 rounded-xl bg-indigo-600/20 border border-indigo-500/30 flex items-center justify-center text-indigo-400">
+                        <Database className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <div className="text-xs font-bold text-white">Data Science</div>
+                        <div className="text-[10px] text-slate-400">8.2k members</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Comm 4 */}
+                  <div className="flex items-center justify-between p-2 rounded-xl hover:bg-[#091b36] transition cursor-pointer">
+                    <div className="flex items-center gap-3">
+                      <div className="w-9 h-9 rounded-xl bg-sky-600/20 border border-sky-500/30 flex items-center justify-center text-sky-400">
+                        <Cloud className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <div className="text-xs font-bold text-white">Cloud & DevOps</div>
+                        <div className="text-[10px] text-slate-400">6.7k members</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Comm 5 */}
+                  <div className="flex items-center justify-between p-2 rounded-xl hover:bg-[#091b36] transition cursor-pointer">
+                    <div className="flex items-center gap-3">
+                      <div className="w-9 h-9 rounded-xl bg-blue-600/20 border border-blue-500/30 flex items-center justify-center text-blue-400">
+                        <Shield className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <div className="text-xs font-bold text-white">Cybersecurity</div>
+                        <div className="text-[10px] text-slate-400">5.3k members</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Widget 2: Top Contributors */}
+              <div className="p-5 rounded-2xl bg-[#061224] border border-[#132c4e] space-y-4 shadow-lg">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2 text-white font-bold text-xs">
+                    <Trophy className="w-4 h-4 text-amber-400" />
+                    Top Contributors
+                  </div>
+                  <button className="text-[11px] text-cyan-400 hover:underline flex items-center gap-0.5">
+                    View All <ChevronRight className="w-3 h-3" />
                   </button>
                 </div>
-              ))}
-            </div>
-          )}
 
-          {/* TAB 4: TALENT LEADERBOARD */}
-          {activeTab === "leaderboard" && (
-            <div className="p-6 rounded-3xl bg-[#091022] border border-blue-900/60 shadow-xl space-y-6">
-              <div className="flex items-center justify-between border-b border-slate-800 pb-4">
+                <div className="space-y-3">
+                  {/* Rank 1 */}
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-9 h-9 rounded-full bg-blue-600/80 flex items-center justify-center text-xs font-bold text-white">
+                        RM
+                      </div>
+                      <div>
+                        <div className="text-xs font-bold text-white">Rahul Mehta</div>
+                        <div className="text-[10px] text-slate-400">320 contributions</div>
+                      </div>
+                    </div>
+                    <div className="w-6 h-6 rounded-full bg-amber-500 text-slate-950 font-black text-xs flex items-center justify-center shadow-md">
+                      1
+                    </div>
+                  </div>
+
+                  {/* Rank 2 */}
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-9 h-9 rounded-full bg-purple-600/80 flex items-center justify-center text-xs font-bold text-white">
+                        SP
+                      </div>
+                      <div>
+                        <div className="text-xs font-bold text-white">Sneha Patel</div>
+                        <div className="text-[10px] text-slate-400">280 contributions</div>
+                      </div>
+                    </div>
+                    <div className="w-6 h-6 rounded-full bg-slate-300 text-slate-950 font-black text-xs flex items-center justify-center shadow-md">
+                      2
+                    </div>
+                  </div>
+
+                  {/* Rank 3 */}
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-9 h-9 rounded-full bg-teal-600/80 flex items-center justify-center text-xs font-bold text-white">
+                        AD
+                      </div>
+                      <div>
+                        <div className="text-xs font-bold text-white">Arjun Desai</div>
+                        <div className="text-[10px] text-slate-400">210 contributions</div>
+                      </div>
+                    </div>
+                    <div className="w-6 h-6 rounded-full bg-amber-700 text-white font-black text-xs flex items-center justify-center shadow-md">
+                      3
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Widget 3: Be a Part of Something Bigger Banner */}
+              <div className="p-6 rounded-2xl bg-gradient-to-br from-[#091e3d] via-[#081831] to-[#040c1a] border border-cyan-500/20 text-center relative overflow-hidden shadow-xl space-y-3">
+                <div className="w-12 h-12 mx-auto rounded-2xl bg-cyan-500/20 border border-cyan-500/30 flex items-center justify-center text-cyan-400 shadow-lg">
+                  <Users className="w-6 h-6" />
+                </div>
                 <div>
-                  <h2 className="text-base font-extrabold text-white flex items-center gap-2">
-                    <Trophy className="w-5 h-5 text-amber-400" />
-                    Institutional Talent Leaderboard
-                  </h2>
-                  <p className="text-xs text-slate-400">Ranked by Talent IQ, verified assessment scores, and streak consistency.</p>
+                  <h3 className="text-sm font-bold text-white">
+                    Be a part of something bigger
+                  </h3>
+                  <p className="text-xs text-slate-400 mt-0.5">
+                    Share. Learn. Grow.
+                  </p>
                 </div>
-                <span className="text-xs text-cyan-400 font-bold px-3 py-1 bg-cyan-500/10 rounded-full border border-cyan-500/30">
-                  Weekly Refresh
-                </span>
               </div>
 
-              <div className="space-y-3">
-                {leaderboard.map((item) => (
-                  <div
-                    key={item.rank}
-                    className={`p-4 rounded-2xl border flex items-center justify-between gap-4 transition ${
-                      item.name.includes("You")
-                        ? "bg-blue-950/60 border-cyan-500/50 shadow-lg shadow-cyan-500/10"
-                        : "bg-[#0d162d] border-slate-800"
-                    }`}
-                  >
-                    <div className="flex items-center gap-4">
-                      <div className={`w-8 h-8 rounded-full font-black text-xs flex items-center justify-center ${
-                        item.rank === 1 ? "bg-amber-500 text-slate-950" : item.rank === 2 ? "bg-slate-300 text-slate-950" : item.rank === 3 ? "bg-amber-700 text-white" : "bg-slate-800 text-slate-400"
-                      }`}>
-                        #{item.rank}
-                      </div>
-
-                      <div>
-                        <h4 className="text-xs font-bold text-white flex items-center gap-2">
-                          <span>{item.name}</span>
-                          <span className="text-[10px] font-normal px-2 py-0.5 rounded bg-blue-600/20 text-cyan-300 border border-blue-500/30">
-                            {item.badge}
-                          </span>
-                        </h4>
-                        <p className="text-[11px] text-slate-400">{item.college}</p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-6 text-right">
-                      <div>
-                        <div className="text-[10px] uppercase font-bold text-slate-400">Talent IQ</div>
-                        <div className="text-sm font-black text-cyan-400">{item.iq}</div>
-                      </div>
-                      <div>
-                        <div className="text-[10px] uppercase font-bold text-slate-400">Streak</div>
-                        <div className="text-sm font-black text-amber-400 flex items-center gap-1 justify-end">
-                          <Flame className="w-3.5 h-3.5 fill-amber-400" /> {item.streak}d
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
             </div>
-          )}
 
+          </div>
         </main>
       </div>
 
-      {/* Create Discussion / Project Modal */}
-      {showCreateModal && (
-        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-[#091022] border border-blue-500/40 rounded-3xl max-w-xl w-full p-6 space-y-6 shadow-2xl animate-in fade-in zoom-in-95">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-4">
-              <h2 className="text-base font-extrabold text-white">Start New Discussion / Post</h2>
-              <button 
-                onClick={() => setShowCreateModal(false)}
-                className="p-1.5 rounded-full bg-slate-900 border border-slate-800 text-slate-400 hover:text-white"
-              >
-                <X className="w-5 h-5" />
-              </button>
+      {/* Discussion Modal */}
+      {activePostModal && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-[#07152b] border border-cyan-500/40 rounded-2xl max-w-lg w-full p-6 space-y-4 shadow-2xl relative">
+            <button
+              onClick={() => setActivePostModal(null)}
+              className="absolute top-4 right-4 text-slate-400 hover:text-white"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <div className="flex items-center gap-3">
+              <div className={`w-9 h-9 rounded-full ${activePostModal.avatarBg} flex items-center justify-center text-xs font-bold text-white`}>
+                {activePostModal.avatarInitials}
+              </div>
+              <div>
+                <div className="text-xs font-bold text-white">{activePostModal.author}</div>
+                <div className="text-[10px] text-slate-400">{activePostModal.timeAgo} • {activePostModal.category}</div>
+              </div>
             </div>
 
-            <form onSubmit={handleCreatePost} className="space-y-4">
-              <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-slate-300">Topic / Question Title</label>
-                <input
-                  type="text"
-                  placeholder="e.g. Best practices for optimizing Next.js server actions..."
-                  value={newTitle}
-                  onChange={(e) => setNewTitle(e.target.value)}
-                  className="w-full bg-[#0e1626] border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-white placeholder-slate-500 focus:border-cyan-500 focus:outline-none"
-                  required
-                />
-              </div>
+            <h3 className="text-base font-bold text-white">{activePostModal.title}</h3>
+            <p className="text-xs text-slate-300 leading-relaxed">{activePostModal.content}</p>
 
-              <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-slate-300">Tag / Category</label>
-                <select
-                  value={newTag}
-                  onChange={(e) => setNewTag(e.target.value)}
-                  className="w-full bg-[#0e1626] border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-white focus:border-cyan-500 focus:outline-none"
-                >
-                  <option value="WebDev">Web Development</option>
-                  <option value="AIML">AI & Machine Learning</option>
-                  <option value="DevOps">DevOps & Cloud</option>
-                  <option value="CareerAdvice">Career & Placements</option>
-                </select>
+            {/* Simulated comments */}
+            <div className="space-y-2 pt-2 border-t border-[#142e4e]">
+              <div className="text-xs font-bold text-white">Responses ({activePostModal.commentsCount})</div>
+              <div className="p-3 rounded-xl bg-[#040c1a] border border-[#142e4e] space-y-1">
+                <div className="flex justify-between text-[11px]">
+                  <span className="font-bold text-cyan-300">Sneha Patel</span>
+                  <span className="text-slate-500">1h ago</span>
+                </div>
+                <p className="text-xs text-slate-300">
+                  Great question! For single T4 instances, definitely consider 4-bit AWQ or bitsandbytes quantization with fp16 activations.
+                </p>
               </div>
+            </div>
 
-              <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-slate-300">Details & Question Description</label>
-                <textarea
-                  rows={4}
-                  placeholder="Share details, code snippets or project goals..."
-                  value={newContent}
-                  onChange={(e) => setNewContent(e.target.value)}
-                  className="w-full bg-[#0e1626] border border-slate-800 rounded-xl p-4 text-xs text-white placeholder-slate-500 focus:border-cyan-500 focus:outline-none"
-                  required
-                />
-              </div>
-
-              <div className="pt-3 border-t border-slate-800 flex items-center justify-end gap-3">
-                <button
-                  type="button"
-                  onClick={() => setShowCreateModal(false)}
-                  className="px-4 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-slate-300 font-semibold hover:bg-slate-800"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-6 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs transition shadow-md"
-                >
-                  Publish Post
-                </button>
-              </div>
-            </form>
+            {/* Quick response form */}
+            <div className="flex gap-2 pt-2">
+              <input 
+                type="text" 
+                placeholder="Write your response..." 
+                className="flex-1 bg-[#040c1a] border border-[#142e4e] rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500"
+              />
+              <button 
+                onClick={() => {
+                  alert("Comment posted!");
+                  setActivePostModal(null);
+                }}
+                className="px-4 py-2 bg-gradient-to-r from-blue-600 to-cyan-500 text-white rounded-xl text-xs font-bold"
+              >
+                Reply
+              </button>
+            </div>
           </div>
         </div>
       )}

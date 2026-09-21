@@ -1,444 +1,464 @@
 "use client";
-import { useState } from "react";
+import React, { useState, useRef } from "react";
 import Link from "next/link";
 import DashboardSidebar from "@/components/dashboard/Sidebar";
 import DashboardHeader from "@/components/dashboard/Header";
-import {
-  FileText, Search, BarChart2, TrendingUp, Target,
-  Sparkles, Upload, ArrowRight, CheckCircle2, Clock,
-  ChevronRight, Bot, Star
+import { 
+  FileText, Upload, ArrowRight, Search, BarChart2, 
+  TrendingUp, Rocket, Lightbulb, ChevronRight, CheckCircle2, 
+  Clock, Star, Sparkles, SlidersHorizontal, Check, 
+  FileCode, ShieldCheck, UserCheck, X
 } from "lucide-react";
 
-type ActiveTab = "all" | "resume" | "ats" | "insights" | "growth";
-
 export default function CareerToolsPage() {
-  const [activeTab, setActiveTab] = useState<ActiveTab>("all");
+  const [pasteMode, setPasteMode] = useState(false);
   const [resumeText, setResumeText] = useState("");
   const [analyzing, setAnalyzing] = useState(false);
-  const [atsResult, setAtsResult] = useState<{
-    score: number;
-    keywordMatch: number | null;
-    skillsMatch: number | null;
-    experienceMatch: number | null;
-    formatting: number | null;
-  }>({
-    score: 0,
-    keywordMatch: null,
-    skillsMatch: null,
-    experienceMatch: null,
-    formatting: null,
-  });
-  const [hasAnalyzed, setHasAnalyzed] = useState(false);
+  const [score, setScore] = useState(78);
+  const [fileName, setFileName] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleAnalyze = () => {
-    if (!resumeText.trim()) return;
-    setAnalyzing(true);
-    setTimeout(() => {
-      setAtsResult({
-        score: 86,
-        keywordMatch: 82,
-        skillsMatch: 91,
-        experienceMatch: 78,
-        formatting: 95,
-      });
-      setHasAnalyzed(true);
-      setAnalyzing(false);
-    }, 1400);
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setFileName(e.target.files[0].name);
+    }
   };
 
-  const tabs: { id: ActiveTab; label: string; icon: any }[] = [
-    { id: "all", label: "All Tools", icon: Target },
-    { id: "resume", label: "Resume", icon: FileText },
-    { id: "ats", label: "ATS Analysis", icon: Search },
-    { id: "insights", label: "Career Insights", icon: BarChart2 },
-    { id: "growth", label: "Growth", icon: TrendingUp },
-  ];
-
-  const popularTools = [
-    {
-      icon: FileText,
-      iconBg: "bg-blue-600/20 text-blue-400",
-      title: "Resume Analyzer",
-      desc: "Get ATS score & improve your resume",
-      color: "border-blue-500/30",
-    },
-    {
-      icon: Search,
-      iconBg: "bg-cyan-600/20 text-cyan-400",
-      title: "ATS Keyword Match",
-      desc: "Find missing keywords for better shortlisting",
-      color: "border-cyan-500/30",
-    },
-    {
-      icon: BarChart2,
-      iconBg: "bg-purple-600/20 text-purple-400",
-      title: "Skill Gap Analysis",
-      desc: "Know what skills to learn next",
-      color: "border-purple-500/30",
-    },
-    {
-      icon: TrendingUp,
-      iconBg: "bg-emerald-600/20 text-emerald-400",
-      title: "Career Roadmap",
-      desc: "Personalized roadmap for your goals",
-      color: "border-emerald-500/30",
-    },
-  ];
-
-  const recentActivity = [
-    {
-      icon: FileText,
-      iconBg: "bg-emerald-500/20 text-emerald-400",
-      title: "Resume Analysis Completed",
-      desc: "Your resume has been analyzed. Check your score!",
-      time: "2 hours ago",
-    },
-    {
-      icon: Star,
-      iconBg: "bg-purple-500/20 text-purple-400",
-      title: "New Skill Recommendation",
-      desc: "You might want to learn System Design",
-      time: "5 hours ago",
-    },
-    {
-      icon: Target,
-      iconBg: "bg-cyan-500/20 text-cyan-400",
-      title: "ATS Tips Available",
-      desc: "View 5 tips to improve your resume",
-      time: "6 hours ago",
-    },
-    {
-      icon: Bot,
-      iconBg: "bg-amber-500/20 text-amber-400",
-      title: "You completed AI Resume Analyzer",
-      desc: "Great job! Keep building your profile.",
-      time: "1 day ago",
-    },
-    {
-      icon: CheckCircle2,
-      iconBg: "bg-blue-500/20 text-blue-400",
-      title: "New Internship Match",
-      desc: "React Developer Intern — 3 new matches",
-      time: "2 days ago",
-    },
-  ];
-
-  // Circular arc for ATS score gauge
-  const radius = 72;
-  const circumference = 2 * Math.PI * radius;
-  const scorePercent = hasAnalyzed ? atsResult.score / 100 : 0;
-  const dashOffset = circumference * (1 - scorePercent * 0.75); // 75% arc
+  const handleAnalyze = () => {
+    setAnalyzing(true);
+    setTimeout(() => {
+      setScore(84);
+      setAnalyzing(false);
+      alert("Resume analysis complete! ATS score updated.");
+    }, 1200);
+  };
 
   return (
-    <div className="min-h-screen bg-[#060911] text-slate-100 flex font-sans">
+    <div className="min-h-screen bg-[#030712] text-slate-100 flex font-sans">
       <DashboardSidebar role="STUDENT" />
 
       <div className="flex-1 flex flex-col min-w-0">
         <DashboardHeader />
 
-        <main className="p-6 space-y-6 overflow-y-auto">
+        <main className="p-5 md:p-7 space-y-6 overflow-y-auto">
+          
+          {/* Main 2-Column Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-          {/* ── Hero Banner ─────────────────────────────────────────── */}
-          <div className="relative rounded-3xl overflow-hidden border border-blue-500/30 bg-[#0a1228] shadow-2xl">
-            {/* BG artwork */}
-            <div
-              className="absolute inset-0 bg-cover bg-right opacity-35"
-              style={{ backgroundImage: `url('/images/career_tools_hero.png')` }}
-            />
-            <div className="absolute inset-0 bg-gradient-to-r from-[#07112b]/95 via-[#091533]/80 to-transparent" />
-
-            <div className="relative z-10 p-6 md:p-8 flex flex-col md:flex-row md:items-center gap-6">
-              <div className="space-y-2 max-w-lg">
-                <div className="flex items-center gap-2">
-                  <div className="p-1.5 rounded-lg bg-cyan-500/20 text-cyan-400">
-                    <Target className="w-4 h-4" />
-                  </div>
-                  <span className="text-xs font-extrabold text-cyan-400 uppercase tracking-widest">
-                    Career Tools
-                  </span>
-                </div>
-                <h1 className="text-2xl md:text-3xl font-extrabold text-white tracking-tight leading-snug">
-                  Turn Your Skills into<br />
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400">
-                    Opportunities
-                  </span>
-                </h1>
-                <p className="text-sm text-slate-300 leading-relaxed">
-                  Use our career tools to analyze your resume, get ATS insights,<br className="hidden md:block" />
-                  find skill gaps and build a stronger profile for your dream jobs.
-                </p>
-              </div>
-
-              {/* Right floating resume graphic representation */}
-              <div className="ml-auto hidden md:flex items-center gap-4 mr-4">
-                <div className="relative w-32 h-36 rounded-2xl border border-blue-400/40 bg-[#0d1b3e]/80 backdrop-blur-md flex flex-col p-3 shadow-2xl shadow-blue-500/20">
-                  <div className="space-y-1.5">
-                    <div className="h-1.5 w-16 rounded bg-slate-600/80" />
-                    <div className="h-1 w-12 rounded bg-slate-700/60" />
-                    <div className="h-1 w-14 rounded bg-slate-700/60" />
-                    <div className="h-px w-full bg-slate-700/40 my-1.5" />
-                    <div className="h-1 w-10 rounded bg-blue-500/60" />
-                    <div className="h-1 w-14 rounded bg-slate-700/60" />
-                    <div className="h-1 w-12 rounded bg-slate-700/60" />
-                    <div className="h-px w-full bg-slate-700/40 my-1.5" />
-                    <div className="h-1 w-16 rounded bg-slate-700/60" />
-                    <div className="h-1 w-10 rounded bg-slate-700/60" />
-                  </div>
-                  <div className="text-[9px] font-bold text-slate-400 mt-auto">RESUME</div>
-                </div>
-
-                <div className="flex flex-col items-center gap-2">
-                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-500/30 to-blue-600/30 border border-cyan-400/40 flex items-center justify-center shadow-lg shadow-cyan-500/20 backdrop-blur-md">
-                    <span className="text-lg font-black text-cyan-300">ATS</span>
-                  </div>
-                  <div className="w-7 h-7 rounded-full bg-emerald-500/20 border border-emerald-400/40 flex items-center justify-center text-emerald-400">
-                    <CheckCircle2 className="w-4 h-4" />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* ── Main 2-column grid ───────────────────────────────────── */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
-            {/* LEFT (2 cols) */}
-            <div className="lg:col-span-2 space-y-6">
-
-              {/* Tab Bar */}
-              <div className="flex items-center gap-2 p-1 rounded-2xl bg-[#0d162d] border border-slate-800 w-fit">
-                {tabs.map((tab) => {
-                  const Icon = tab.icon;
-                  const active = activeTab === tab.id;
-                  return (
-                    <button
-                      key={tab.id}
-                      onClick={() => setActiveTab(tab.id)}
-                      className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
-                        active
-                          ? "bg-blue-600/40 text-white border border-blue-500/40 shadow-md"
-                          : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/60"
-                      }`}
-                    >
-                      <Icon className={`w-3.5 h-3.5 ${active ? "text-cyan-400" : "text-slate-500"}`} />
-                      {tab.label}
-                    </button>
-                  );
-                })}
-              </div>
-
-              {/* Resume Paste Panel */}
-              <div className="p-6 rounded-3xl bg-[#091022] border border-blue-900/60 shadow-xl space-y-4">
-                <div className="flex items-center gap-2.5">
-                  <div className="p-1.5 rounded-lg bg-blue-600/20 text-blue-400 border border-blue-500/30">
-                    <FileText className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <h2 className="text-sm font-extrabold text-white">
-                      # Paste Resume Content or Bullet Points
-                    </h2>
-                    <p className="text-[11px] text-slate-400">
-                      Paste your resume text here and get instant ATS match scores, keyword suggestions and improvement tips.
+            {/* LEFT COLUMN: Hero + Resume Analyzer Dropzone + Popular Career Tools (approx 8 cols) */}
+            <div className="lg:col-span-8 space-y-6">
+              
+              {/* Hero Banner */}
+              <div className="relative rounded-2xl overflow-hidden border border-[#163354] bg-gradient-to-r from-[#07152b] via-[#091e3d] to-[#0a2347] p-6 md:p-8 shadow-xl">
+                <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+                  <div className="space-y-2 max-w-lg">
+                    <div className="text-[11px] font-bold tracking-widest text-cyan-400 uppercase">
+                      Career Tools
+                    </div>
+                    <h1 className="text-2xl md:text-3xl font-extrabold text-white tracking-tight">
+                      Turn Your Skills into <span className="text-cyan-400">Opportunities</span>
+                    </h1>
+                    <p className="text-xs md:text-sm text-slate-300 leading-relaxed">
+                      Use our powerful career tools to build your resume, analyze your skills, and get personalized insights for a better tomorrow.
                     </p>
                   </div>
+
+                  {/* 3D Resume Sheet Graphic */}
+                  <div className="hidden sm:flex shrink-0 relative pr-4">
+                    <div className="w-40 h-28 bg-gradient-to-br from-[#0c2242] to-[#081831] rounded-xl border border-cyan-500/40 shadow-2xl p-3 flex flex-col justify-between relative group hover:scale-105 transition-transform">
+                      <div className="flex items-center justify-between border-b border-cyan-500/20 pb-2">
+                        <div className="text-[10px] font-bold text-white tracking-wider">RESUME</div>
+                        <div className="w-4 h-4 rounded-full bg-cyan-500/20 flex items-center justify-center text-[9px] text-cyan-400">✓</div>
+                      </div>
+                      <div className="space-y-1.5 py-1">
+                        <div className="h-1.5 w-3/4 rounded bg-cyan-400/40" />
+                        <div className="h-1.5 w-1/2 rounded bg-blue-500/40" />
+                        <div className="h-1.5 w-2/3 rounded bg-slate-600" />
+                      </div>
+                      <div className="flex items-center justify-between pt-1 text-[9px] text-cyan-300 font-bold">
+                        <span>ATS Optimized</span>
+                        <span>98%</span>
+                      </div>
+                      {/* Floating mini badge */}
+                      <div className="absolute -top-3 -right-3 w-8 h-8 rounded-lg bg-blue-600 border border-cyan-400 flex items-center justify-center text-xs shadow-lg">
+                        📈
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Central Section: Resume Analyzer */}
+              <div className="p-6 rounded-2xl bg-[#061224] border border-[#132c4e] shadow-xl space-y-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-blue-600/20 border border-blue-500/30 flex items-center justify-center text-cyan-400">
+                    <FileText className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h2 className="text-base font-bold text-white">Resume Analyzer</h2>
+                    <p className="text-xs text-slate-400">Get ATS score & improve your resume</p>
+                  </div>
                 </div>
 
-                {/* Textarea */}
-                <div className="relative rounded-2xl border border-slate-700/80 bg-[#0d162d] overflow-hidden">
-                  <textarea
-                    rows={7}
-                    value={resumeText}
-                    onChange={(e) => setResumeText(e.target.value)}
-                    maxLength={5000}
-                    placeholder={`Example:\nSenior Software Developer with 2 years of experience in React, Node.js, and Python...\n• Developed and maintained web applications...\n• Worked with cross-functional teams...`}
-                    className="w-full bg-transparent px-4 pt-4 pb-10 text-xs text-slate-200 placeholder-slate-500 focus:outline-none resize-none"
+                {/* Upload / Paste Area */}
+                <div className="border border-dashed border-cyan-500/30 hover:border-cyan-400/60 rounded-2xl p-8 bg-[#040c1a]/60 text-center relative transition-all duration-300">
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    onChange={handleFileUpload}
+                    accept=".pdf,.docx,.doc"
+                    className="hidden"
                   />
 
-                  {/* Bottom bar inside textarea */}
-                  <div className="absolute bottom-0 left-0 right-0 flex items-center justify-between px-4 py-2 bg-[#0d162d] border-t border-slate-800/60">
-                    <div className="flex items-center gap-3">
-                      <button className="flex items-center gap-1.5 text-[11px] text-slate-400 hover:text-cyan-400 transition font-semibold">
-                        <Upload className="w-3.5 h-3.5" />
-                        Upload File (PDF/DOCX)
-                      </button>
-                      <span className="text-slate-600 text-xs">or</span>
-                      <button className="text-[11px] text-slate-400 hover:text-cyan-400 transition font-semibold">
-                        Paste text
-                      </button>
+                  {!pasteMode ? (
+                    <div className="space-y-3">
+                      <div 
+                        onClick={() => fileInputRef.current?.click()}
+                        className="w-14 h-14 mx-auto rounded-2xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 cursor-pointer hover:bg-cyan-500/20 transition-all shadow-inner"
+                      >
+                        <Upload className="w-7 h-7" />
+                      </div>
+
+                      <div className="space-y-1">
+                        <div className="text-sm font-semibold text-slate-200">
+                          {fileName ? (
+                            <span className="text-cyan-300 font-bold">Selected: {fileName}</span>
+                          ) : (
+                            <>
+                              Upload your resume (PDF/DOCX) or{" "}
+                              <button
+                                type="button"
+                                onClick={() => setPasteMode(true)}
+                                className="text-cyan-400 hover:underline font-bold"
+                              >
+                                Paste your text
+                              </button>
+                            </>
+                          )}
+                        </div>
+                        <div className="text-xs text-slate-500">
+                          Max file size: 5MB
+                        </div>
+                      </div>
                     </div>
-                    <span className="text-[11px] text-slate-500 font-medium">
-                      {resumeText.length}/5000
-                    </span>
+                  ) : (
+                    <div className="space-y-3 text-left">
+                      <div className="flex justify-between items-center text-xs">
+                        <span className="text-slate-300 font-semibold">Paste Resume Text</span>
+                        <button
+                          type="button"
+                          onClick={() => setPasteMode(false)}
+                          className="text-cyan-400 hover:underline"
+                        >
+                          Switch back to file upload
+                        </button>
+                      </div>
+                      <textarea
+                        value={resumeText}
+                        onChange={(e) => setResumeText(e.target.value)}
+                        placeholder="Paste your resume sections here (Skills, Experience, Projects)..."
+                        rows={4}
+                        className="w-full rounded-xl bg-[#07172e] border border-[#142847] p-3 text-xs text-slate-200 focus:outline-none focus:border-cyan-500"
+                      />
+                    </div>
+                  )}
+
+                  {/* Analyze Button */}
+                  <div className="mt-5 flex justify-end">
+                    <button
+                      onClick={handleAnalyze}
+                      disabled={analyzing}
+                      className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white text-xs font-bold shadow-lg shadow-cyan-500/20 transition-all flex items-center gap-1.5 hover:scale-[1.02] active:scale-[0.98]"
+                    >
+                      {analyzing ? "Analyzing Resume..." : "Analyze Resume"}
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Popular Career Tools Section */}
+              <div className="space-y-3 pt-1">
+                <div className="flex items-center gap-2">
+                  <Star className="w-4 h-4 text-cyan-400 fill-current" />
+                  <div>
+                    <h3 className="text-sm font-bold text-white">Popular Career Tools</h3>
+                    <p className="text-[11px] text-slate-400">Tools to help you grow, get noticed and land your dream job.</p>
                   </div>
                 </div>
 
-                {/* Analyze Button */}
-                <button
-                  onClick={handleAnalyze}
-                  disabled={analyzing || !resumeText.trim()}
-                  className="w-full py-3.5 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-500 text-white font-extrabold text-sm hover:opacity-90 transition shadow-lg shadow-blue-500/30 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {analyzing ? (
-                    <>
-                      <Sparkles className="w-4 h-4 animate-spin" style={{ animationDuration: "1s" }} />
-                      <span>Analyzing Resume...</span>
-                    </>
-                  ) : (
-                    <>
-                      <Sparkles className="w-4 h-4" />
-                      <span>Analyze Resume</span>
-                    </>
-                  )}
-                </button>
-              </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                  {/* Tool 1 */}
+                  <div className="p-4 rounded-2xl bg-[#061224] border border-[#132c4e] hover:border-cyan-500/40 transition-all flex flex-col justify-between group cursor-pointer shadow-md">
+                    <div className="space-y-3">
+                      <div className="w-10 h-10 rounded-xl bg-blue-500/15 border border-blue-500/30 flex items-center justify-center text-cyan-400">
+                        <FileText className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <h4 className="text-xs font-bold text-white group-hover:text-cyan-300 transition-colors">
+                          Resume Analyzer
+                        </h4>
+                        <p className="text-[11px] text-slate-400 mt-1 leading-relaxed">
+                          Get ATS score & improve your resume
+                        </p>
+                      </div>
+                    </div>
+                    <div className="pt-3 flex justify-end">
+                      <div className="w-7 h-7 rounded-full bg-[#0b1f3b] border border-[#173a66] group-hover:border-cyan-400 flex items-center justify-center text-cyan-400 transition-all">
+                        <ChevronRight className="w-3.5 h-3.5" />
+                      </div>
+                    </div>
+                  </div>
 
-              {/* Popular Career Tools Grid */}
-              <div className="p-6 rounded-3xl bg-[#091022] border border-blue-900/60 shadow-xl space-y-5">
-                <h3 className="text-sm font-extrabold text-white">Popular Career Tools</h3>
+                  {/* Tool 2 */}
+                  <div className="p-4 rounded-2xl bg-[#061224] border border-[#132c4e] hover:border-cyan-500/40 transition-all flex flex-col justify-between group cursor-pointer shadow-md">
+                    <div className="space-y-3">
+                      <div className="w-10 h-10 rounded-xl bg-purple-500/15 border border-purple-500/30 flex items-center justify-center text-purple-400">
+                        <Search className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <h4 className="text-xs font-bold text-white group-hover:text-purple-300 transition-colors">
+                          ATS Keyword Match
+                        </h4>
+                        <p className="text-[11px] text-slate-400 mt-1 leading-relaxed">
+                          Find missing keywords for better shortlisting
+                        </p>
+                      </div>
+                    </div>
+                    <div className="pt-3 flex justify-end">
+                      <div className="w-7 h-7 rounded-full bg-[#0b1f3b] border border-[#173a66] group-hover:border-cyan-400 flex items-center justify-center text-cyan-400 transition-all">
+                        <ChevronRight className="w-3.5 h-3.5" />
+                      </div>
+                    </div>
+                  </div>
 
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                  {popularTools.map((tool) => {
-                    const Icon = tool.icon;
-                    return (
-                      <button
-                        key={tool.title}
-                        className={`p-4 rounded-2xl bg-[#0d162d] border ${tool.color} hover:border-opacity-80 transition-all group text-left space-y-3`}
-                      >
-                        <div className={`w-10 h-10 rounded-xl ${tool.iconBg} flex items-center justify-center`}>
-                          <Icon className="w-5 h-5" />
-                        </div>
-                        <div>
-                          <h4 className="text-xs font-extrabold text-white group-hover:text-cyan-300 transition leading-snug">
-                            {tool.title}
-                          </h4>
-                          <p className="text-[10px] text-slate-400 mt-1 leading-snug">{tool.desc}</p>
-                        </div>
-                        <div className="text-cyan-400 group-hover:translate-x-0.5 transition-transform">
-                          <ArrowRight className="w-3.5 h-3.5" />
-                        </div>
-                      </button>
-                    );
-                  })}
+                  {/* Tool 3 */}
+                  <div className="p-4 rounded-2xl bg-[#061224] border border-[#132c4e] hover:border-cyan-500/40 transition-all flex flex-col justify-between group cursor-pointer shadow-md">
+                    <div className="space-y-3">
+                      <div className="w-10 h-10 rounded-xl bg-indigo-500/15 border border-indigo-500/30 flex items-center justify-center text-indigo-400">
+                        <BarChart2 className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <h4 className="text-xs font-bold text-white group-hover:text-indigo-300 transition-colors">
+                          Skill Gap Analysis
+                        </h4>
+                        <p className="text-[11px] text-slate-400 mt-1 leading-relaxed">
+                          Know what skills to learn next
+                        </p>
+                      </div>
+                    </div>
+                    <div className="pt-3 flex justify-end">
+                      <div className="w-7 h-7 rounded-full bg-[#0b1f3b] border border-[#173a66] group-hover:border-cyan-400 flex items-center justify-center text-cyan-400 transition-all">
+                        <ChevronRight className="w-3.5 h-3.5" />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Tool 4 */}
+                  <div className="p-4 rounded-2xl bg-[#061224] border border-[#132c4e] hover:border-cyan-500/40 transition-all flex flex-col justify-between group cursor-pointer shadow-md">
+                    <div className="space-y-3">
+                      <div className="w-10 h-10 rounded-xl bg-teal-500/15 border border-teal-500/30 flex items-center justify-center text-teal-400">
+                        <TrendingUp className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <h4 className="text-xs font-bold text-white group-hover:text-teal-300 transition-colors">
+                          Career Roadmap
+                        </h4>
+                        <p className="text-[11px] text-slate-400 mt-1 leading-relaxed">
+                          Personalized roadmap for your goals
+                        </p>
+                      </div>
+                    </div>
+                    <div className="pt-3 flex justify-end">
+                      <div className="w-7 h-7 rounded-full bg-[#0b1f3b] border border-[#173a66] group-hover:border-cyan-400 flex items-center justify-center text-cyan-400 transition-all">
+                        <ChevronRight className="w-3.5 h-3.5" />
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
 
             </div>
 
-            {/* RIGHT (1 col) */}
-            <div className="space-y-6">
+            {/* RIGHT COLUMN: Rocket Banner + Resume Analysis Score + Quick Tips + Recent Activity (approx 4 cols) */}
+            <div className="lg:col-span-4 space-y-5">
+              
+              {/* Card 1: Rocket Motivational Card */}
+              <div className="p-5 rounded-2xl bg-gradient-to-r from-[#07172e] to-[#0a2347] border border-[#163354] flex items-center justify-between gap-4 shadow-lg group hover:border-cyan-500/40 transition-all">
+                <div className="flex items-center gap-3.5">
+                  <div className="w-11 h-11 rounded-xl bg-cyan-500/20 border border-cyan-500/30 flex items-center justify-center text-cyan-400 shrink-0">
+                    <Rocket className="w-5 h-5 -rotate-45" />
+                  </div>
+                  <div>
+                    <div className="text-xs text-slate-300 font-semibold">
+                      Your skills today, <span className="text-cyan-400 font-bold block">your opportunities tomorrow.</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="w-8 h-8 rounded-full bg-[#0d2748] border border-cyan-500/30 text-cyan-400 flex items-center justify-center shrink-0">
+                  <ChevronRight className="w-4 h-4" />
+                </div>
+              </div>
 
-              {/* Your Resume Analysis card */}
-              <div className="p-5 rounded-3xl bg-[#091022] border border-blue-900/60 shadow-xl space-y-5">
-                <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-                  <h3 className="text-sm font-extrabold text-white">Your Resume Analysis</h3>
-                  <span className="text-[10px] font-bold text-cyan-400 bg-cyan-500/10 border border-cyan-500/30 px-2 py-0.5 rounded-full">
-                    ATS Match Score
-                  </span>
+              {/* Card 2: Your Resume Analysis Widget */}
+              <div className="p-5 rounded-2xl bg-[#061224] border border-[#132c4e] space-y-4 shadow-lg">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2 text-white font-bold text-xs">
+                    <BarChart2 className="w-4 h-4 text-cyan-400" />
+                    Your Resume Analysis
+                  </div>
+                  <button className="text-[11px] text-cyan-400 hover:underline flex items-center gap-0.5">
+                    View All <ChevronRight className="w-3 h-3" />
+                  </button>
                 </div>
 
-                {/* Circular Gauge */}
-                <div className="flex justify-center">
-                  <div className="relative w-44 h-44">
-                    <svg className="w-full h-full -rotate-[135deg]" viewBox="0 0 180 180">
-                      {/* Track arc */}
-                      <circle
-                        cx="90" cy="90" r={radius}
-                        fill="none"
-                        stroke="#1e293b"
-                        strokeWidth="12"
-                        strokeDasharray={`${circumference * 0.75} ${circumference * 0.25}`}
-                        strokeLinecap="round"
-                      />
-                      {/* Value arc */}
-                      <circle
-                        cx="90" cy="90" r={radius}
-                        fill="none"
-                        stroke="url(#gaugeGrad)"
-                        strokeWidth="12"
-                        strokeDasharray={`${circumference * 0.75 * scorePercent} ${circumference * (1 - 0.75 * scorePercent)}`}
-                        strokeLinecap="round"
-                        className="transition-all duration-1000"
-                      />
-                      <defs>
-                        <linearGradient id="gaugeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                          <stop offset="0%" stopColor="#06b6d4" />
-                          <stop offset="100%" stopColor="#6366f1" />
-                        </linearGradient>
-                      </defs>
-                    </svg>
-                    {/* Center text */}
-                    <div className="absolute inset-0 flex flex-col items-center justify-center">
-                      <span className="text-2xl font-black text-white">
-                        {hasAnalyzed ? atsResult.score : "—"}
+                <div className="flex items-center gap-5 pt-1">
+                  {/* Circular Gauge */}
+                  <div className="relative w-20 h-20 rounded-full border-4 border-cyan-400 flex flex-col items-center justify-center bg-[#071933] shadow-lg shadow-cyan-500/20 shrink-0">
+                    <span className="text-lg font-black text-white">{score}%</span>
+                    <span className="text-[8px] uppercase font-bold text-slate-400">ATS Score</span>
+                  </div>
+
+                  {/* Metrics list */}
+                  <div className="space-y-1.5 flex-1 text-xs">
+                    <div className="flex items-center justify-between">
+                      <span className="flex items-center gap-1.5 text-slate-300">
+                        <span className="w-2 h-2 rounded-full bg-emerald-400" />
+                        Keyword Match
                       </span>
-                      <span className="text-[11px] text-slate-400 font-semibold">/ 100</span>
+                      <span className="font-bold text-white">8/10</span>
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <span className="flex items-center gap-1.5 text-slate-300">
+                        <span className="w-2 h-2 rounded-full bg-cyan-400" />
+                        Skills Match
+                      </span>
+                      <span className="font-bold text-white">7/10</span>
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <span className="flex items-center gap-1.5 text-slate-300">
+                        <span className="w-2 h-2 rounded-full bg-purple-400" />
+                        Experience Match
+                      </span>
+                      <span className="font-bold text-white">6/10</span>
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <span className="flex items-center gap-1.5 text-slate-300">
+                        <span className="w-2 h-2 rounded-full bg-amber-400" />
+                        Formatting
+                      </span>
+                      <span className="font-bold text-white">9/10</span>
                     </div>
                   </div>
                 </div>
 
-                {/* Score breakdown */}
-                <div className="space-y-3 pt-1">
+                {/* Recommendation Box */}
+                <div className="p-3 rounded-xl bg-[#091f3a] border border-cyan-500/20 flex items-start gap-2.5 text-xs text-slate-300">
+                  <Lightbulb className="w-4 h-4 text-cyan-400 shrink-0 mt-0.5" />
+                  <div>
+                    <strong className="text-white block font-semibold">Good start!</strong>
+                    Add more relevant keywords and improve formatting for a higher score.
+                  </div>
+                </div>
+              </div>
+
+              {/* Card 3: Quick Tips */}
+              <div className="p-5 rounded-2xl bg-[#061224] border border-[#132c4e] space-y-3 shadow-lg">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2 text-white font-bold text-xs">
+                    <Lightbulb className="w-4 h-4 text-cyan-400" />
+                    Quick Tips
+                  </div>
+                  <button className="text-[11px] text-cyan-400 hover:underline flex items-center gap-0.5">
+                    View Tips <ChevronRight className="w-3 h-3" />
+                  </button>
+                </div>
+
+                <div className="flex flex-wrap gap-2">
                   {[
-                    { label: "Keyword Match", color: "bg-cyan-400", value: atsResult.keywordMatch },
-                    { label: "Skills Match", color: "bg-blue-400", value: atsResult.skillsMatch },
-                    { label: "Experience Match", color: "bg-purple-400", value: atsResult.experienceMatch },
-                    { label: "Formatting", color: "bg-amber-400", value: atsResult.formatting },
-                  ].map((item) => (
-                    <div key={item.label} className="flex items-center justify-between text-xs">
-                      <div className="flex items-center gap-2">
-                        <div className={`w-2 h-2 rounded-full ${item.color}`} />
-                        <span className="text-slate-300 font-medium">{item.label}</span>
-                      </div>
-                      <span className="font-bold text-white">
-                        {item.value !== null ? `${item.value}%` : "—"}
-                      </span>
-                    </div>
+                    "Add relevant keywords",
+                    "Use clean formatting",
+                    "Highlight key skills",
+                    "Keep it concise"
+                  ].map((tip) => (
+                    <span
+                      key={tip}
+                      className="px-3 py-1.5 rounded-xl bg-[#091b33] border border-[#153457] text-xs font-medium text-slate-300 hover:text-cyan-300 hover:border-cyan-500/40 cursor-pointer transition-all"
+                    >
+                      {tip}
+                    </span>
                   ))}
                 </div>
-
-                {/* CTA hint */}
-                <button className="w-full p-3 rounded-2xl bg-[#0d162d] border border-slate-800 hover:border-cyan-500/40 transition flex items-center gap-3 text-left group">
-                  <div className="w-8 h-8 rounded-xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center shrink-0">
-                    <Sparkles className="w-4 h-4" />
-                  </div>
-                  <p className="text-[11px] text-slate-300 leading-snug">
-                    Paste your resume to get a detailed ATS score, keyword analysis and personalized suggestions.
-                  </p>
-                  <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-cyan-400 shrink-0 transition" />
-                </button>
               </div>
 
-              {/* Recent Activity */}
-              <div className="p-5 rounded-3xl bg-[#091022] border border-blue-900/60 shadow-xl space-y-4">
-                <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-                  <h3 className="text-sm font-extrabold text-white">Recent Activity</h3>
-                  <span className="text-xs font-bold text-cyan-400 hover:underline cursor-pointer">
-                    View All
-                  </span>
+              {/* Card 4: Recent Activity */}
+              <div className="p-5 rounded-2xl bg-[#061224] border border-[#132c4e] space-y-3.5 shadow-lg">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2 text-white font-bold text-xs">
+                    <Clock className="w-4 h-4 text-cyan-400" />
+                    Recent Activity
+                  </div>
+                  <button className="text-[11px] text-cyan-400 hover:underline flex items-center gap-0.5">
+                    View All <ChevronRight className="w-3 h-3" />
+                  </button>
                 </div>
 
-                <div className="space-y-4">
-                  {recentActivity.map((act, idx) => {
-                    const Icon = act.icon;
-                    return (
-                      <div key={idx} className="flex items-start gap-3">
-                        <div className={`w-8 h-8 rounded-xl ${act.iconBg} flex items-center justify-center shrink-0 mt-0.5`}>
-                          <Icon className="w-3.5 h-3.5" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-xs font-bold text-white leading-tight">{act.title}</p>
-                          <p className="text-[11px] text-slate-400 mt-0.5 leading-snug">{act.desc}</p>
-                        </div>
-                        <span className="text-[10px] text-slate-500 shrink-0 whitespace-nowrap mt-0.5">
-                          {act.time}
-                        </span>
-                      </div>
-                    );
-                  })}
+                <div className="space-y-3">
+                  {/* Activity 1 */}
+                  <div className="flex items-start gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 shrink-0">
+                      <FileText className="w-4 h-4" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <div className="text-xs font-bold text-white">Resume Analysis Completed</div>
+                      <div className="text-[11px] text-slate-400 leading-tight">Your resume has been analyzed. Check your score!</div>
+                      <div className="text-[10px] text-slate-500 mt-0.5">2 hours ago</div>
+                    </div>
+                  </div>
+
+                  {/* Activity 2 */}
+                  <div className="flex items-start gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400 shrink-0">
+                      <Star className="w-4 h-4" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <div className="text-xs font-bold text-white">New Skill Recommendation</div>
+                      <div className="text-[11px] text-slate-400 leading-tight">You might want to learn System Design</div>
+                      <div className="text-[10px] text-slate-500 mt-0.5">5 hours ago</div>
+                    </div>
+                  </div>
+
+                  {/* Activity 3 */}
+                  <div className="flex items-start gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 shrink-0">
+                      <Search className="w-4 h-4" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <div className="text-xs font-bold text-white">ATS Tips Available</div>
+                      <div className="text-[11px] text-slate-400 leading-tight">View 5 tips to improve your resume</div>
+                      <div className="text-[10px] text-slate-500 mt-0.5">6 hours ago</div>
+                    </div>
+                  </div>
+
+                  {/* Activity 4 */}
+                  <div className="flex items-start gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 shrink-0">
+                      <UserCheck className="w-4 h-4" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <div className="text-xs font-bold text-white">Profile Updated</div>
+                      <div className="text-[11px] text-slate-400 leading-tight">Your career profile is now more complete</div>
+                      <div className="text-[10px] text-slate-500 mt-0.5">1 day ago</div>
+                    </div>
+                  </div>
                 </div>
               </div>
 
             </div>
+
           </div>
         </main>
       </div>
