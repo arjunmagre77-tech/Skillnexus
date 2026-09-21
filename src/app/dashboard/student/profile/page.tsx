@@ -1,114 +1,579 @@
 "use client";
-import { useState } from "react";
+import React, { useState } from "react";
+import Link from "next/link";
 import DashboardSidebar from "@/components/dashboard/Sidebar";
 import DashboardHeader from "@/components/dashboard/Header";
-import { 
-  User, Award, Flame, Target, ShieldCheck, 
-  ExternalLink, Share2, Mail, GraduationCap
+import {
+  MapPin,
+  CheckCircle2,
+  Trophy,
+  BookOpen,
+  FolderOpen,
+  Briefcase,
+  Clock,
+  Star,
+  ArrowRight,
+  ChevronRight,
+  User,
+  Award,
+  Code2,
+  Sparkles,
+  TrendingUp,
+  FileText,
+  Lightbulb,
+  Rocket,
+  Users,
+  ShieldCheck,
+  Circle
 } from "lucide-react";
 
+/* ── Hexagonal SVG Badge matching Image 1 ── */
+function HexBadge({
+  gradient,
+  icon,
+  label,
+  desc,
+  date,
+}: {
+  gradient: [string, string];
+  icon: React.ReactNode;
+  label: string;
+  desc: string;
+  date: string;
+}) {
+  const gradId = `hex-grad-${label.replace(/\s+/g, "-")}`;
+  return (
+    <div className="flex flex-col items-center gap-2.5 group cursor-pointer text-center select-none p-2 rounded-xl hover:bg-[#061122]/60 transition">
+      <div className="relative w-20 h-22 flex items-center justify-center">
+        {/* Hexagonal polygon SVG */}
+        <svg viewBox="0 0 100 115" className="w-full h-full drop-shadow-xl overflow-visible">
+          <defs>
+            <linearGradient id={gradId} x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor={gradient[0]} />
+              <stop offset="100%" stopColor={gradient[1]} />
+            </linearGradient>
+            <filter id={`glow-${gradId}`} x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="2" result="blur" />
+              <feComposite in="SourceGraphic" in2="blur" operator="over" />
+            </filter>
+          </defs>
+          <polygon
+            points="50,4 94,28 94,84 50,108 6,84 6,28"
+            fill={`url(#${gradId})`}
+            stroke="rgba(255,255,255,0.18)"
+            strokeWidth="1.5"
+            className="group-hover:stroke-cyan-300 transition-colors"
+          />
+        </svg>
+
+        {/* Center icon */}
+        <div className="absolute inset-0 flex items-center justify-center text-white drop-shadow-md">
+          {icon}
+        </div>
+      </div>
+
+      <div className="space-y-0.5">
+        <p className="text-xs font-bold text-white group-hover:text-cyan-300 transition leading-tight">
+          {label}
+        </p>
+        <p className="text-[10px] text-slate-400 leading-tight max-w-[100px] mx-auto line-clamp-2">
+          {desc}
+        </p>
+        <p className="text-[9px] text-slate-500 flex items-center justify-center gap-1 pt-0.5 font-medium">
+          <Clock className="w-2.5 h-2.5" /> {date}
+        </p>
+      </div>
+    </div>
+  );
+}
+
 export default function StudentProfilePage() {
+  const [activeTab, setActiveTab] = useState<"overview" | "badges" | "skills" | "projects" | "experience">("overview");
+
   const student = {
-    name: "Aarav Sharma",
-    email: "aarav@iitb.ac.in",
-    college: "IIT Bombay",
-    department: "Computer Science & Engineering",
-    year: "3rd Year",
-    cgpa: "8.8 / 10.0",
-    talentIQ: 780,
-    readinessScore: 84,
-    points: 1250,
-    streakDays: 5,
-    level: "Level 4 — Advanced AI Systems Builder",
-    verifiedSkills: ["React / Next.js", "Python / PyTorch", "TypeScript", "SQL & Postgres", "GraphQL"],
-    badges: [
-      { name: "React Virtuoso", icon: "⚛️", date: "Sep 2026", desc: "Top 2% in Next.js 14 System Test" },
-      { name: "5-Day Streak Master", icon: "🔥", date: "Sep 2026", desc: "Completed daily coding challenges 5 days in a row" },
-      { name: "Python PyTorch Expert", icon: "🐍", date: "Aug 2026", desc: "Passed PyTorch Tensor Ops Assessment" },
-      { name: "Hackathon Finalist", icon: "🏆", date: "Aug 2026", desc: "Built RAG search engine micro-project" }
-    ]
+    name: "Anjani Magre",
+    initials: "AM",
+    title: "Student • Pune",
+    bio: "Learning today, building tomorrow.",
+    skills: ["Web Development", "Python", "AI/ML"],
+    extraSkills: 2,
+    totalBadges: 6,
+    skillCount: 4,
+    projects: 3,
+    internships: 2,
+    profilePct: 78,
   };
 
+  const badges = [
+    {
+      label: "Code Explorer",
+      desc: "Completed your first coding challenge.",
+      date: "Sep 2026",
+      gradient: ["#1e1b4b", "#3b82f6"] as [string, string],
+      icon: <Code2 className="w-6 h-6 text-blue-300" />,
+    },
+    {
+      label: "Quick Learner",
+      desc: "Completed 5 learning modules.",
+      date: "Aug 2026",
+      gradient: ["#064e3b", "#10b981"] as [string, string],
+      icon: <Lightbulb className="w-6 h-6 text-emerald-300" />,
+    },
+    {
+      label: "Project Builder",
+      desc: "Built your first project submission.",
+      date: "Jul 2026",
+      gradient: ["#78350f", "#f59e0b"] as [string, string],
+      icon: <Star className="w-6 h-6 text-amber-300 fill-amber-300/40" />,
+    },
+    {
+      label: "Community Star",
+      desc: "Actively participated in community discussions.",
+      date: "Jun 2026",
+      gradient: ["#581c87", "#a855f7"] as [string, string],
+      icon: <Users className="w-6 h-6 text-purple-300" />,
+    },
+    {
+      label: "Goal Getter",
+      desc: "Completed your career roadmap.",
+      date: "May 2026",
+      gradient: ["#0c4a6e", "#06b6d4"] as [string, string],
+      icon: <Rocket className="w-6 h-6 text-cyan-300" />,
+    },
+  ];
+
+  const profileChecklist = [
+    { label: "Personal Information", done: true },
+    { label: "Skills & Interests", done: true },
+    { label: "Education", done: true },
+    { label: "Experience", done: false },
+    { label: "Resume Upload", done: false },
+  ];
+
+  const recentActivity = [
+    {
+      title: "Resume Analysis Completed",
+      desc: "Your resume has been analyzed. Check your score!",
+      time: "2 hours ago",
+      icon: <FileText className="w-4 h-4 text-emerald-400" />,
+      iconBg: "bg-emerald-500/15 border-emerald-500/30",
+    },
+    {
+      title: "New Skill Recommendation",
+      desc: "You might want to learn System Design",
+      time: "5 hours ago",
+      icon: <Star className="w-4 h-4 text-purple-400" />,
+      iconBg: "bg-purple-500/15 border-purple-500/30",
+    },
+    {
+      title: "ATS Tips Available",
+      desc: "View 5 tips to improve your resume",
+      time: "6 hours ago",
+      icon: <TrendingUp className="w-4 h-4 text-cyan-400" />,
+      iconBg: "bg-cyan-500/15 border-cyan-500/30",
+    },
+    {
+      title: "Profile Updated",
+      desc: "Your career profile is now more complete",
+      time: "1 day ago",
+      icon: <User className="w-4 h-4 text-amber-400" />,
+      iconBg: "bg-amber-500/15 border-amber-500/30",
+    },
+  ];
+
+  const tabs = [
+    { id: "overview", label: "Overview", icon: <User className="w-3.5 h-3.5" /> },
+    { id: "badges", label: "Badges", icon: <Award className="w-3.5 h-3.5" /> },
+    { id: "skills", label: "Skills", icon: <Sparkles className="w-3.5 h-3.5" /> },
+    { id: "projects", label: "Projects", icon: <FolderOpen className="w-3.5 h-3.5" /> },
+    { id: "experience", label: "Experience", icon: <Briefcase className="w-3.5 h-3.5" /> },
+  ] as const;
+
+  const stats = [
+    { label: "Total Badges", value: student.totalBadges, icon: <ShieldCheck className="w-4 h-4 text-cyan-400" /> },
+    { label: "Skills", value: student.skillCount, icon: <BookOpen className="w-4 h-4 text-cyan-400" /> },
+    { label: "Projects", value: student.projects, icon: <FolderOpen className="w-4 h-4 text-cyan-400" /> },
+    { label: "Internships", value: student.internships, icon: <Briefcase className="w-4 h-4 text-cyan-400" /> },
+  ];
+
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex">
+    <div className="min-h-screen bg-[#040914] text-slate-100 flex font-sans">
       <DashboardSidebar role="STUDENT" />
 
       <div className="flex-1 flex flex-col min-w-0">
-        <DashboardHeader 
-          title="Student Verified Profile & TalentIQ Showcase" 
-          subtitle="Your public verified skill resume card for recruiters and mentors."
-        />
+        <DashboardHeader />
 
-        <main className="p-6 space-y-6 overflow-y-auto">
-          {/* Main Profile Header Card */}
-          <div className="p-8 rounded-3xl bg-slate-900/90 border border-slate-800 shadow-2xl relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6">
-            <div className="flex flex-col md:flex-row items-center gap-6 text-center md:text-left z-10">
-              <div className="w-24 h-24 rounded-3xl bg-gradient-to-tr from-cyan-500 via-indigo-600 to-purple-600 text-white font-black text-3xl flex items-center justify-center shadow-xl shadow-cyan-500/20">
-                AS
-              </div>
-              <div className="space-y-1">
-                <div className="flex flex-wrap items-center justify-center md:justify-start gap-2">
-                  <h2 className="text-2xl font-black text-white">{student.name}</h2>
-                  <span className="text-xs px-3 py-1 rounded-full bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 font-bold">
-                    ✓ Verified Student Vector
-                  </span>
-                </div>
-                <p className="text-xs text-slate-300 flex items-center justify-center md:justify-start gap-1">
-                  <GraduationCap className="w-4 h-4 text-cyan-400" />
-                  {student.college} • {student.department} ({student.year})
-                </p>
-                <p className="text-xs text-slate-400">CGPA: {student.cgpa} | Email: {student.email}</p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-3 z-10">
-              <button 
-                onClick={() => navigator.clipboard.writeText(window.location.href)}
-                className="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs transition flex items-center gap-2"
+        <main className="p-5 md:p-7 space-y-6 overflow-y-auto">
+          {/* ═══════════════════════════════════════════
+              1. MAIN PROFILE HEADER BANNER
+          ═══════════════════════════════════════════ */}
+          <div
+            className="relative rounded-2xl border border-[#142848] overflow-hidden shadow-2xl p-6 md:p-7"
+            style={{
+              background: "linear-gradient(135deg, #06132d 0%, #091c3d 45%, #05142f 100%)",
+            }}
+          >
+            {/* Background Mountain Skyline SVG & Stars */}
+            <div className="absolute inset-0 pointer-events-none select-none overflow-hidden">
+              <svg
+                viewBox="0 0 1000 200"
+                preserveAspectRatio="none"
+                className="absolute bottom-0 right-0 w-full h-full opacity-25"
               >
-                <Share2 className="w-3.5 h-3.5" /> Share Verified Profile Link
-              </button>
+                <polygon
+                  points="200,200 420,50 560,140 720,30 860,130 1000,60 1000,200"
+                  fill="#00d4ff"
+                  opacity="0.3"
+                />
+                <polygon
+                  points="350,200 520,80 660,160 800,60 950,150 1000,100 1000,200"
+                  fill="#3b82f6"
+                  opacity="0.35"
+                />
+              </svg>
+              <div className="absolute top-4 right-1/3 w-1.5 h-1.5 rounded-full bg-cyan-300 animate-ping opacity-60" />
+              <div className="absolute top-8 right-1/4 w-1 h-1 rounded-full bg-blue-200 opacity-75" />
             </div>
-          </div>
 
-          {/* Gamification Level Progress */}
-          <div className="p-6 rounded-3xl bg-gradient-to-r from-cyan-950/60 via-slate-900 to-indigo-950/60 border border-cyan-500/30 shadow-xl space-y-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <span className="text-xs font-bold uppercase text-cyan-400">Gamification Progression</span>
-                <h3 className="text-lg font-bold text-white">{student.level}</h3>
-              </div>
+            {/* Top Right Floating Badge */}
+            <div className="absolute top-4 right-5 hidden sm:flex items-center gap-2 bg-[#061936]/80 border border-blue-500/25 rounded-xl px-3 py-2 shadow-lg backdrop-blur-md">
               <div className="text-right">
-                <span className="text-xs text-slate-400">Monthly XP</span>
-                <div className="text-xl font-black text-amber-400">{student.points} XP</div>
+                <p className="text-[10px] font-bold text-slate-300 leading-tight">
+                  Small steps<br />take you to<br />big dreams
+                </p>
+              </div>
+              <div className="flex flex-col items-center justify-center pl-1 border-l border-blue-500/30">
+                <Sparkles className="w-3.5 h-3.5 text-cyan-400 mb-0.5" />
+                <div className="text-base leading-none">🏔️</div>
+                <div className="text-[8px] text-cyan-400 font-bold">🚩</div>
               </div>
             </div>
 
-            <div className="w-full bg-slate-800 rounded-full h-3">
-              <div className="bg-gradient-to-r from-cyan-500 via-indigo-500 to-amber-400 h-3 rounded-full" style={{ width: "75%" }} />
-            </div>
-            <div className="flex justify-between text-xs text-slate-400">
-              <span>Current Level 4 (1,250 XP)</span>
-              <span>Level 5 Master (1,500 XP Needed)</span>
+            {/* Banner Main Row: Avatar + Info + Stats */}
+            <div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 pt-1">
+              {/* Left: Avatar & Info */}
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5">
+                {/* Circular Gradient Avatar */}
+                <div className="relative shrink-0">
+                  <div
+                    className="w-20 h-20 rounded-full flex items-center justify-center text-2xl font-black text-white shadow-2xl border-2 border-cyan-400/40"
+                    style={{
+                      background: "linear-gradient(135deg, #1e40af 0%, #3b82f6 50%, #8b5cf6 100%)",
+                    }}
+                  >
+                    {student.initials}
+                  </div>
+                  {/* Green active status indicator */}
+                  <div className="absolute bottom-0 right-0 w-5 h-5 bg-emerald-500 rounded-full border-2 border-[#06132d] flex items-center justify-center">
+                    <div className="w-2 h-2 bg-white rounded-full" />
+                  </div>
+                </div>
+
+                {/* Name, location, bio, skill tags */}
+                <div className="space-y-2">
+                  <div className="flex items-center gap-3 flex-wrap">
+                    <h1 className="text-xl md:text-2xl font-black text-white tracking-tight">
+                      {student.name}
+                    </h1>
+                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 flex items-center gap-1">
+                      <CheckCircle2 className="w-3 h-3" /> Active
+                    </span>
+                  </div>
+
+                  <p className="text-xs text-slate-400 flex items-center gap-1.5 font-medium">
+                    <MapPin className="w-3.5 h-3.5 text-slate-500" />
+                    {student.title}
+                  </p>
+
+                  <p className="text-xs text-slate-300 font-medium">
+                    {student.bio}
+                  </p>
+
+                  {/* Skill Badges */}
+                  <div className="flex items-center gap-2 flex-wrap pt-1">
+                    {student.skills.map((sk) => (
+                      <span
+                        key={sk}
+                        className="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-[#091a38] text-slate-200 border border-[#142d54] flex items-center gap-1"
+                      >
+                        {sk === "Web Development" && <Code2 className="w-3 h-3 text-cyan-400" />}
+                        {sk === "Python" && <span className="text-[10px]">🐍</span>}
+                        {sk === "AI/ML" && <Sparkles className="w-3 h-3 text-violet-400" />}
+                        {sk}
+                      </span>
+                    ))}
+                    <span className="px-2 py-1 rounded-lg text-[10px] font-bold bg-[#091a38] text-slate-400 border border-[#142d54]">
+                      +{student.extraSkills} more
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right: Quick Stats Row */}
+              <div className="flex items-center gap-4 sm:gap-6 bg-[#040d20]/70 border border-[#102444] rounded-2xl px-5 py-3.5 shrink-0 self-stretch sm:self-auto justify-around sm:justify-start">
+                {stats.map((stat, i) => (
+                  <React.Fragment key={stat.label}>
+                    {i > 0 && <div className="w-px h-8 bg-[#132847]" />}
+                    <div className="flex flex-col items-center text-center min-w-[54px] space-y-0.5">
+                      <div className="flex items-center gap-1 text-slate-400">
+                        {stat.icon}
+                        <span className="text-base md:text-lg font-black text-white">{stat.value}</span>
+                      </div>
+                      <span className="text-[10px] font-semibold text-slate-400 leading-tight">
+                        {stat.label}
+                      </span>
+                    </div>
+                  </React.Fragment>
+                ))}
+              </div>
             </div>
           </div>
 
-          {/* Badges Collection */}
-          <div className="p-6 rounded-3xl bg-slate-900/90 border border-slate-800 space-y-4">
-            <h3 className="text-lg font-bold text-white flex items-center gap-2">
-              <Award className="w-5 h-5 text-amber-400" />
-              Unlocked Skill Badges & Trophies
-            </h3>
+          {/* ═══════════════════════════════════════════
+              2. TAB NAVIGATION ROW
+          ═══════════════════════════════════════════ */}
+          <div className="flex items-center gap-1.5 p-1 rounded-xl bg-[#071324] border border-[#112642] w-fit">
+            {tabs.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-bold transition-all ${
+                  activeTab === tab.id
+                    ? "bg-blue-600 text-white shadow-lg shadow-blue-600/30"
+                    : "text-slate-400 hover:text-white hover:bg-[#0a1b33]"
+                }`}
+              >
+                {tab.icon}
+                {tab.label}
+              </button>
+            ))}
+          </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              {student.badges.map((b) => (
-                <div key={b.name} className="p-5 rounded-2xl bg-slate-950 border border-slate-800 space-y-2 text-center">
-                  <div className="text-4xl my-2">{b.icon}</div>
-                  <h4 className="font-bold text-white text-sm">{b.name}</h4>
-                  <p className="text-xs text-slate-400">{b.desc}</p>
-                  <span className="text-[10px] text-cyan-400 block pt-1">{b.date}</span>
+          {/* ═══════════════════════════════════════════
+              3. MAIN TWO-COLUMN CONTENT GRID
+          ═══════════════════════════════════════════ */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+            {/* ──────────────────────────────────────────
+                LEFT COLUMN (2/3 width)
+            ────────────────────────────────────────── */}
+            <div className="lg:col-span-2 space-y-6">
+
+              {/* ── My Badges Card ── */}
+              <div className="rounded-2xl bg-[#071324] border border-[#112642] p-5 md:p-6 space-y-5">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="flex items-center gap-2 mb-1">
+                      <div className="w-7 h-7 rounded-lg bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-amber-400">
+                        <Trophy className="w-4 h-4" />
+                      </div>
+                      <h2 className="text-sm md:text-base font-black text-white">My Badges</h2>
+                    </div>
+                    <p className="text-xs text-slate-400">
+                      Showcase your achievements and skills earned.
+                    </p>
+                  </div>
+
+                  <Link
+                    href="/dashboard/student/profile"
+                    className="flex items-center gap-1.5 text-xs font-bold text-cyan-300 hover:text-cyan-200 transition px-3 py-1.5 rounded-lg bg-[#0c2448] border border-cyan-500/30 hover:bg-[#102d59]"
+                  >
+                    View All Badges <ArrowRight className="w-3.5 h-3.5" />
+                  </Link>
                 </div>
-              ))}
+
+                {/* 5 Hexagonal Badges Row */}
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 pt-2">
+                  {badges.map((badge) => (
+                    <HexBadge key={badge.label} {...badge} />
+                  ))}
+                </div>
+              </div>
+
+              {/* ── Profile Completion Card ── */}
+              <div className="rounded-2xl bg-[#071324] border border-[#112642] p-6 md:p-7">
+                <div className="flex flex-col sm:flex-row items-center gap-8">
+                  {/* Circular Progress Gauge */}
+                  <div className="relative w-32 h-32 shrink-0">
+                    <svg viewBox="0 0 100 100" className="w-full h-full -rotate-90">
+                      <defs>
+                        <linearGradient id="profileRingGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                          <stop offset="0%" stopColor="#00e5ff" />
+                          <stop offset="100%" stopColor="#2563eb" />
+                        </linearGradient>
+                      </defs>
+                      <circle
+                        cx="50"
+                        cy="50"
+                        r="40"
+                        fill="none"
+                        stroke="#102542"
+                        strokeWidth="8"
+                      />
+                      <circle
+                        cx="50"
+                        cy="50"
+                        r="40"
+                        fill="none"
+                        stroke="url(#profileRingGrad)"
+                        strokeWidth="8"
+                        strokeLinecap="round"
+                        strokeDasharray={`${student.profilePct * 2.513} ${251.3 - student.profilePct * 2.513}`}
+                      />
+                    </svg>
+                    <div className="absolute inset-0 flex flex-col items-center justify-center">
+                      <span className="text-2xl font-black text-white">{student.profilePct}%</span>
+                    </div>
+                  </div>
+
+                  {/* Checklist & CTA */}
+                  <div className="flex-1 space-y-4 text-center sm:text-left">
+                    <div>
+                      <h3 className="text-sm md:text-base font-black text-white">Profile Completion</h3>
+                      <p className="text-xs text-slate-400 mt-0.5">
+                        Complete your profile to unlock better opportunities.
+                      </p>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-left">
+                      {profileChecklist.map((item) => (
+                        <div key={item.label} className="flex items-center gap-2">
+                          {item.done ? (
+                            <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                          ) : (
+                            <Circle className="w-4 h-4 text-slate-600 shrink-0" />
+                          )}
+                          <span
+                            className={`text-xs font-medium ${
+                              item.done ? "text-slate-200" : "text-slate-500"
+                            }`}
+                          >
+                            {item.label}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="pt-1">
+                      <Link
+                        href="/dashboard/student/profile"
+                        className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs transition shadow-lg shadow-blue-600/30"
+                      >
+                        Complete Profile <ArrowRight className="w-3.5 h-3.5" />
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            {/* ──────────────────────────────────────────
+                RIGHT COLUMN (1/3 width)
+            ────────────────────────────────────────── */}
+            <div className="space-y-6">
+
+              {/* ── Recent Activity Card ── */}
+              <div className="rounded-2xl bg-[#071324] border border-[#112642] p-5 space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Clock className="w-4 h-4 text-cyan-400" />
+                    <h3 className="text-sm font-black text-white">Recent Activity</h3>
+                  </div>
+                  <Link
+                    href="#"
+                    className="text-xs font-bold text-cyan-400 hover:text-cyan-300 flex items-center gap-1 transition"
+                  >
+                    View All <ArrowRight className="w-3 h-3" />
+                  </Link>
+                </div>
+
+                <div className="space-y-3 pt-1">
+                  {recentActivity.map((act) => (
+                    <div
+                      key={act.title}
+                      className="flex items-start gap-3 p-3 rounded-xl bg-[#050e1c] border border-[#112542] hover:border-[#1a3861] transition cursor-pointer group"
+                    >
+                      <div
+                        className={`w-9 h-9 rounded-full border flex items-center justify-center shrink-0 ${act.iconBg}`}
+                      >
+                        {act.icon}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs font-bold text-white group-hover:text-cyan-300 transition leading-snug">
+                          {act.title}
+                        </p>
+                        <p className="text-[10px] text-slate-400 mt-0.5 leading-snug">
+                          {act.desc}
+                        </p>
+                        <p className="text-[10px] text-slate-500 mt-1">
+                          {act.time}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* ── Keep Going! Card ── */}
+              <div
+                className="rounded-2xl border border-[#142848] p-5 space-y-3 relative overflow-hidden shadow-xl"
+                style={{
+                  background: "linear-gradient(135deg, #05142e 0%, #091e3d 50%, #05132d 100%)",
+                }}
+              >
+                {/* Background mountain peak SVG */}
+                <div className="absolute inset-0 pointer-events-none select-none opacity-30">
+                  <svg
+                    viewBox="0 0 400 200"
+                    preserveAspectRatio="none"
+                    className="absolute bottom-0 right-0 w-full h-full"
+                  >
+                    <polygon
+                      points="120,200 260,60 340,140 400,80 400,200"
+                      fill="#3b82f6"
+                    />
+                  </svg>
+                </div>
+
+                <div className="relative z-10 flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-full bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 shrink-0">
+                    <Trophy className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-black text-white">Keep Going!</h3>
+                    <p className="text-xs text-slate-300 mt-1 leading-relaxed">
+                      You&apos;re doing great. More skills, more opportunities await!
+                    </p>
+                  </div>
+                </div>
+
+                {/* Mountain illustration with flag and right button */}
+                <div className="relative z-10 flex items-end justify-between pt-2">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-1.5">
+                      <div className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
+                      <span className="text-[10px] text-slate-400">
+                        Skills earned: <span className="text-white font-bold">14</span>
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <div className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                      <span className="text-[10px] text-slate-400">
+                        Badges earned: <span className="text-white font-bold">6</span>
+                      </span>
+                    </div>
+                  </div>
+
+                  <Link
+                    href="/dashboard/student/learning"
+                    className="w-8 h-8 rounded-full bg-blue-600/30 hover:bg-blue-600 border border-blue-500/40 text-cyan-300 hover:text-white flex items-center justify-center transition shadow-md"
+                  >
+                    <ChevronRight className="w-4 h-4" />
+                  </Link>
+                </div>
+              </div>
+
             </div>
           </div>
         </main>
