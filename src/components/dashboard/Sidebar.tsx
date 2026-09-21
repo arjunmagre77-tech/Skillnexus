@@ -5,7 +5,8 @@ import {
   LayoutDashboard, Target, BookOpen, Award, Briefcase, 
   FolderKanban, FileText, Bot, User, Building2, Users, 
   BarChart3, LogOut, CheckCircle2, ShieldCheck,
-  Calendar, MessageSquare, PlusCircle
+  Calendar, MessageSquare, PlusCircle, Home, LayoutGrid,
+  CreditCard, Code2, Sparkles, ShoppingBag, Wrench
 } from "lucide-react";
 
 interface SidebarProps {
@@ -35,15 +36,15 @@ export default function DashboardSidebar({ role = "STUDENT", activeTab, onSelect
   const pathname = usePathname();
 
   const studentLinks: NavItem[] = [
-    { label: "Home", href: "/dashboard/student", icon: LayoutDashboard },
-    { label: "Skills & Learning", href: "/dashboard/student/skills", icon: BookOpen },
+    { label: "Home", href: "/dashboard/student", icon: Home },
+    { label: "Skills & Learning", href: "/dashboard/student/skills", icon: LayoutGrid },
     { label: "AI Learning Roadmap", href: "/dashboard/student/learning", icon: Target },
     { label: "Assessments & Quizzes", href: "/dashboard/student/assessments", icon: FileText },
-    { label: "Internships", href: "/dashboard/student/internships", icon: Briefcase },
-    { label: "Projects", href: "/dashboard/student/projects", icon: FolderKanban },
-    { label: "Job Matches", href: "/dashboard/student/jobs", icon: Building2 },
-    { label: "My Applications", href: "/dashboard/student/applications", icon: CheckCircle2 },
-    { label: "Career Tools", href: "/dashboard/student/ai-tools", icon: Bot },
+    { label: "Internships", href: "/dashboard/student/internships", icon: CreditCard },
+    { label: "Projects", href: "/dashboard/student/projects", icon: Code2 },
+    { label: "Job Matches", href: "/dashboard/student/jobs", icon: Sparkles },
+    { label: "My Applications", href: "/dashboard/student/applications", icon: ShoppingBag },
+    { label: "Career Tools", href: "/dashboard/student/ai-tools", icon: Wrench },
     { label: "Community", href: "/dashboard/student/community", icon: Users },
     { label: "Profile & Badges", href: "/dashboard/student/profile", icon: ShieldCheck },
   ];
