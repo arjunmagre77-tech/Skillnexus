@@ -5,7 +5,7 @@ import DashboardHeader from "@/components/dashboard/Header";
 import {
   BarChart3, AlertCircle, TrendingUp, BookOpen, Download,
   Sparkles, ArrowUpRight, ShieldCheck, Zap, Calendar,
-  Grid3X3, AlertTriangle, ArrowUp
+  Grid3X3, AlertTriangle, ArrowUp, Filter
 } from "lucide-react";
 
 interface HeatmapItem {
@@ -86,6 +86,8 @@ const curriculumDirectives = [
 
 export default function CurriculumAnalyticsPage() {
   const [selectedCell, setSelectedCell] = useState<HeatmapItem | null>(heatmapData[1]);
+  const [selectedDeptFilter, setSelectedDeptFilter] = useState("all");
+  const [selectedRoleFilter, setSelectedRoleFilter] = useState("all");
   const [toastMsg, setToastMsg] = useState<string | null>(null);
 
   const showToast = (msg: string) => {
@@ -110,7 +112,6 @@ export default function CurriculumAnalyticsPage() {
         />
 
         <main className="p-6 space-y-6 overflow-y-auto">
-          {/* Toast */}
           {toastMsg && (
             <div className="fixed bottom-6 right-6 z-50 px-4 py-3 rounded-2xl bg-indigo-500 text-white font-bold shadow-2xl flex items-center gap-2 animate-bounce">
               <Sparkles className="w-5 h-5" />
@@ -118,7 +119,6 @@ export default function CurriculumAnalyticsPage() {
             </div>
           )}
 
-          {/* Page Header */}
           <div className="flex items-start justify-between gap-4">
             <div>
               <div className="flex items-center gap-2 mb-1">
@@ -129,18 +129,48 @@ export default function CurriculumAnalyticsPage() {
               <p className="text-sm text-slate-400 mt-0.5">Identify skill gaps across your curriculum and align with industry demands for better placement outcomes.</p>
             </div>
             <div className="flex items-center gap-2 shrink-0">
-              <div className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-700 text-xs text-slate-300 font-semibold">
-                <Calendar className="w-3.5 h-3.5 text-cyan-400" />
-                Academic Year 2025–26
-                <svg className="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" /></svg>
-              </div>
               <button
                 onClick={() => showToast("📄 Academic Council PDF Report successfully generated!")}
-                className="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs transition flex items-center gap-2 shadow-lg shadow-indigo-600/20"
+                className="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs transition flex items-center gap-2 shadow-lg shadow-indigo-600/20 cursor-pointer"
               >
                 <Download className="w-3.5 h-3.5" />
                 Download Council Report (PDF)
               </button>
+            </div>
+          </div>
+
+          <div className="p-4 rounded-xl bg-slate-900 border border-slate-800 flex flex-col md:flex-row gap-3 items-center justify-between">
+            <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
+              <div className="flex items-center gap-2">
+                <Filter className="w-3.5 h-3.5 text-cyan-400" />
+                <span className="text-xs font-bold text-slate-400">Branch:</span>
+                <select
+                  value={selectedDeptFilter}
+                  onChange={(e) => setSelectedDeptFilter(e.target.value)}
+                  className="bg-slate-950 border border-slate-800 text-xs text-white rounded-lg px-3 py-1.5 focus:border-cyan-500 focus:outline-none"
+                >
+                  <option value="all">All Departments</option>
+                  <option value="Computer Science">Computer Science & Eng</option>
+                  <option value="AI & Data Science">AI & Data Science</option>
+                  <option value="Information Tech">Information Technology</option>
+                  <option value="Electrical & ECE">Electrical & ECE</option>
+                </select>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-bold text-slate-400">Target Role:</span>
+                <select
+                  value={selectedRoleFilter}
+                  onChange={(e) => setSelectedRoleFilter(e.target.value)}
+                  className="bg-slate-950 border border-slate-800 text-xs text-white rounded-lg px-3 py-1.5 focus:border-cyan-500 focus:outline-none"
+                >
+                  <option value="all">All Target Industry Roles</option>
+                  <option value="AI / ML Engineer">AI / ML Engineer</option>
+                  <option value="Full Stack Developer">Full Stack Developer</option>
+                  <option value="Cloud & DevOps Engineer">Cloud & DevOps Engineer</option>
+                  <option value="Data Scientist">Data Scientist</option>
+                </select>
+              </div>
             </div>
           </div>
 
@@ -204,23 +234,8 @@ export default function CurriculumAnalyticsPage() {
                 </div>
                 <p className="text-xs text-slate-400 mt-0.5">Click any matrix cell to inspect market demand gap and view recommended syllabus adjustments.</p>
               </div>
-              <div className="flex items-center gap-2 text-xs shrink-0">
-                <select className="py-2 px-3 rounded-xl bg-slate-950 border border-slate-800 text-slate-300 focus:outline-none text-xs">
-                  <option>All Departments</option>
-                </select>
-                <select className="py-2 px-3 rounded-xl bg-slate-950 border border-slate-800 text-slate-300 focus:outline-none text-xs">
-                  <option>All Academic Years</option>
-                </select>
-                <select className="py-2 px-3 rounded-xl bg-slate-950 border border-slate-800 text-slate-300 focus:outline-none text-xs">
-                  <option>All Placement Tiers</option>
-                </select>
-                <button className="p-2 rounded-xl bg-slate-950 border border-slate-800 text-slate-400 hover:text-white transition">
-                  <Grid3X3 className="w-4 h-4" />
-                </button>
-              </div>
             </div>
 
-            {/* Matrix Table */}
             <div className="overflow-x-auto">
               <table className="w-full text-center border-collapse">
                 <thead>
@@ -247,7 +262,7 @@ export default function CurriculumAnalyticsPage() {
                           <td key={domain} className="p-1.5">
                             <button
                               onClick={() => setSelectedCell(item)}
-                              className={`w-full py-2.5 px-2 rounded-xl transition flex flex-col items-center justify-center border ${
+                              className={`w-full py-2.5 px-2 rounded-xl transition flex flex-col items-center justify-center border cursor-pointer ${
                                 isSelected ? "ring-2 ring-cyan-400 scale-105 shadow-xl shadow-cyan-900/30" : ""
                               } ${
                                 item.score >= 80
@@ -270,7 +285,6 @@ export default function CurriculumAnalyticsPage() {
             </div>
           </div>
 
-          {/* Selected Cell Detail */}
           {selectedCell && (
             <div className="p-6 rounded-3xl bg-gradient-to-br from-slate-900 via-slate-900 to-indigo-950/80 border border-cyan-500/30 space-y-4 shadow-2xl">
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-slate-800 pb-3">
@@ -284,21 +298,11 @@ export default function CurriculumAnalyticsPage() {
                     <span className="px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-400 border border-rose-500/30 text-[10px] font-bold">
                       {selectedCell.score}% vs {selectedCell.industryDemandScore}%
                     </span>
-                    <span className={`px-2 py-0.5 rounded-full font-bold text-[10px] border ${
-                      selectedCell.status === "Strong Alignment"
-                        ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/30"
-                        : selectedCell.status === "Moderate Gap"
-                        ? "bg-amber-500/20 text-amber-400 border-amber-500/30"
-                        : "bg-rose-500/20 text-rose-400 border-rose-500/30"
-                    }`}>
-                      {selectedCell.status}
-                    </span>
                   </div>
                 </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                {/* Progress bars */}
                 <div className="space-y-3 text-xs">
                   <div>
                     <div className="flex justify-between text-slate-400 mb-1.5">
@@ -320,7 +324,6 @@ export default function CurriculumAnalyticsPage() {
                   </div>
                 </div>
 
-                {/* Recommendation */}
                 <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-2 text-xs">
                   <h4 className="font-bold text-amber-400 flex items-center gap-1.5">
                     <Sparkles className="w-4 h-4" /> Recommended Academic Syllabus Fix
@@ -328,7 +331,7 @@ export default function CurriculumAnalyticsPage() {
                   <p className="text-slate-300 leading-relaxed">{selectedCell.syllabusFix}</p>
                   <button
                     onClick={() => showToast(`Added syllabus amendment item for ${selectedCell.domain}`)}
-                    className="mt-1 text-cyan-400 hover:underline font-bold flex items-center gap-1"
+                    className="mt-1 text-cyan-400 hover:underline font-bold flex items-center gap-1 cursor-pointer"
                   >
                     <span>Submit to Academic Board</span>
                     <ArrowUpRight className="w-3.5 h-3.5" />
@@ -338,7 +341,6 @@ export default function CurriculumAnalyticsPage() {
             </div>
           )}
 
-          {/* Curriculum Directives */}
           <div className="p-6 rounded-3xl bg-slate-900/90 border border-slate-800 space-y-4">
             <h3 className="text-base font-bold text-white flex items-center gap-2">
               <BookOpen className="w-5 h-5 text-indigo-400" />

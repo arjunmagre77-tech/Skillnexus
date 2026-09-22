@@ -41,7 +41,7 @@ export async function POST(req: Request) {
         gpa: 8.8,
         talent_iq: 780,
         placement_readiness: 84,
-        nexa_points: 100,
+        skill_coins: 100,
         streak_days: 1,
         is_premium: false,
         is_public: true,

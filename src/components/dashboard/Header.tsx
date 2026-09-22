@@ -2,9 +2,10 @@
 import { useState } from "react";
 import Link from "next/link";
 import { signOut } from "next-auth/react";
+import { useTheme } from "@/components/ThemeProvider";
 import { 
   Search, Bell, Sparkles, ChevronDown, User, Settings, 
-  HelpCircle, ShieldCheck, Flame, BookOpen, Briefcase, LogOut
+  HelpCircle, ShieldCheck, Flame, BookOpen, Briefcase, LogOut, Sun, Moon
 } from "lucide-react";
 
 interface HeaderProps {
@@ -31,6 +32,8 @@ export default function DashboardHeader({
     { id: 2, title: "Industry Challenge Milestone", desc: "Microsoft Refactoring CLI reached 94/100 submissions", time: "1h ago", icon: "🏆", type: "badge" },
     { id: 3, title: "New Skill Vector Benchmark", desc: "Cognizant Vector Database benchmark updated", time: "3h ago", icon: "👨‍🏫", type: "session" },
   ];
+
+  const { theme, toggleTheme } = useTheme();
 
   return (
     <header className="sticky top-0 z-30 bg-[#050c18]/90 backdrop-blur-md border-b border-[#12233b] px-6 py-3.5 flex items-center justify-between gap-4">
@@ -82,11 +85,17 @@ export default function DashboardHeader({
           )}
         </div>
 
-        {/* Theme Toggle Moon Icon */}
-        <button className="p-2 rounded-full bg-[#081526] hover:bg-[#0e213d] border border-[#14263f] text-slate-300 transition">
-          <svg className="w-4 h-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-          </svg>
+        {/* Theme Toggle Sun/Moon Icon */}
+        <button 
+          onClick={toggleTheme}
+          title={`Switch to ${theme === "dark" ? "Light" : "Dark"} Mode`}
+          className="p-2 rounded-full bg-[#081526] hover:bg-[#0e213d] border border-[#14263f] text-slate-300 transition cursor-pointer"
+        >
+          {theme === "dark" ? (
+            <Sun className="w-4 h-4 text-amber-400" />
+          ) : (
+            <Moon className="w-4 h-4 text-indigo-500" />
+          )}
         </button>
 
         {/* User Profile Pill matching screenshot */}

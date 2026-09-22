@@ -1,13 +1,11 @@
 "use client";
 import React, { useState, useRef } from "react";
-import Link from "next/link";
 import DashboardSidebar from "@/components/dashboard/Sidebar";
 import DashboardHeader from "@/components/dashboard/Header";
 import { 
   FileText, Upload, ArrowRight, Search, BarChart2, 
   TrendingUp, Rocket, Lightbulb, ChevronRight, CheckCircle2, 
-  Clock, Star, Sparkles, SlidersHorizontal, Check, 
-  FileCode, ShieldCheck, UserCheck, X
+  Clock, Star, Target, UserCheck
 } from "lucide-react";
 
 export default function CareerToolsPage() {
@@ -38,55 +36,62 @@ export default function CareerToolsPage() {
       <DashboardSidebar role="STUDENT" />
 
       <div className="flex-1 flex flex-col min-w-0">
-        <DashboardHeader />
+        <DashboardHeader 
+          title="Skill Gap Analyzer & Career Tools" 
+          subtitle="Compare your verified skills against industry benchmarks and optimize your ATS resume score."
+        />
 
         <main className="p-5 md:p-7 space-y-6 overflow-y-auto">
-          
+          {/* Hero Banner */}
+          <div className="relative rounded-3xl overflow-hidden border border-blue-500/30 bg-[#0a1228] shadow-2xl p-6 md:p-8 flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div className="space-y-2 max-w-lg">
+              <div className="flex items-center gap-2">
+                <div className="p-1.5 rounded-lg bg-cyan-500/20 text-cyan-400">
+                  <Target className="w-4 h-4" />
+                </div>
+                <span className="text-xs font-extrabold text-cyan-400 uppercase tracking-widest">
+                  Skill Intelligence
+                </span>
+              </div>
+              <h1 className="text-2xl md:text-3xl font-extrabold text-white tracking-tight leading-snug">
+                Skill Gap<br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400">
+                  Analyzer Engine
+                </span>
+              </h1>
+              <p className="text-sm text-slate-300 leading-relaxed">
+                Compare your current verified skills against industry target roles and get automated resume ATS suggestions.
+              </p>
+            </div>
+
+            <div className="hidden md:flex items-center gap-4">
+              <div className="relative w-32 h-36 rounded-2xl border border-blue-400/40 bg-[#0d1b3e]/80 backdrop-blur-md flex flex-col p-3 shadow-2xl shadow-blue-500/20">
+                <div className="space-y-1.5">
+                  <div className="h-1.5 w-16 rounded bg-slate-600/80" />
+                  <div className="h-1 w-12 rounded bg-slate-700/60" />
+                  <div className="h-1 w-14 rounded bg-slate-700/60" />
+                  <div className="h-px w-full bg-slate-700/40 my-1.5" />
+                  <div className="h-1 w-10 rounded bg-blue-500/60" />
+                  <div className="h-1 w-14 rounded bg-slate-700/60" />
+                </div>
+                <div className="text-[9px] font-bold text-slate-400 mt-auto">ATS RESUME</div>
+              </div>
+
+              <div className="flex flex-col items-center gap-2">
+                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-500/30 to-blue-600/30 border border-cyan-400/40 flex items-center justify-center shadow-lg shadow-cyan-500/20 backdrop-blur-md">
+                  <span className="text-lg font-black text-cyan-300">ATS</span>
+                </div>
+                <div className="w-7 h-7 rounded-full bg-emerald-500/20 border border-emerald-400/40 flex items-center justify-center text-emerald-400">
+                  <CheckCircle2 className="w-4 h-4" />
+                </div>
+              </div>
+            </div>
+          </div>
+
           {/* Main 2-Column Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-            {/* LEFT COLUMN: Hero + Resume Analyzer Dropzone + Popular Career Tools (approx 8 cols) */}
             <div className="lg:col-span-8 space-y-6">
-              
-              {/* Hero Banner */}
-              <div className="relative rounded-2xl overflow-hidden border border-[#163354] bg-gradient-to-r from-[#07152b] via-[#091e3d] to-[#0a2347] p-6 md:p-8 shadow-xl">
-                <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
-                  <div className="space-y-2 max-w-lg">
-                    <div className="text-[11px] font-bold tracking-widest text-cyan-400 uppercase">
-                      Career Tools
-                    </div>
-                    <h1 className="text-2xl md:text-3xl font-extrabold text-white tracking-tight">
-                      Turn Your Skills into <span className="text-cyan-400">Opportunities</span>
-                    </h1>
-                    <p className="text-xs md:text-sm text-slate-300 leading-relaxed">
-                      Use our powerful career tools to build your resume, analyze your skills, and get personalized insights for a better tomorrow.
-                    </p>
-                  </div>
-
-                  {/* 3D Resume Sheet Graphic */}
-                  <div className="hidden sm:flex shrink-0 relative pr-4">
-                    <div className="w-40 h-28 bg-gradient-to-br from-[#0c2242] to-[#081831] rounded-xl border border-cyan-500/40 shadow-2xl p-3 flex flex-col justify-between relative group hover:scale-105 transition-transform">
-                      <div className="flex items-center justify-between border-b border-cyan-500/20 pb-2">
-                        <div className="text-[10px] font-bold text-white tracking-wider">RESUME</div>
-                        <div className="w-4 h-4 rounded-full bg-cyan-500/20 flex items-center justify-center text-[9px] text-cyan-400">✓</div>
-                      </div>
-                      <div className="space-y-1.5 py-1">
-                        <div className="h-1.5 w-3/4 rounded bg-cyan-400/40" />
-                        <div className="h-1.5 w-1/2 rounded bg-blue-500/40" />
-                        <div className="h-1.5 w-2/3 rounded bg-slate-600" />
-                      </div>
-                      <div className="flex items-center justify-between pt-1 text-[9px] text-cyan-300 font-bold">
-                        <span>ATS Optimized</span>
-                        <span>98%</span>
-                      </div>
-                      {/* Floating mini badge */}
-                      <div className="absolute -top-3 -right-3 w-8 h-8 rounded-lg bg-blue-600 border border-cyan-400 flex items-center justify-center text-xs shadow-lg">
-                        📈
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
 
               {/* Central Section: Resume Analyzer */}
               <div className="p-6 rounded-2xl bg-[#061224] border border-[#132c4e] shadow-xl space-y-4">
@@ -163,7 +168,6 @@ export default function CareerToolsPage() {
                     </div>
                   )}
 
-                  {/* Analyze Button */}
                   <div className="mt-5 flex justify-end">
                     <button
                       onClick={handleAnalyze}
@@ -188,7 +192,6 @@ export default function CareerToolsPage() {
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                  {/* Tool 1 */}
                   <div className="p-4 rounded-2xl bg-[#061224] border border-[#132c4e] hover:border-cyan-500/40 transition-all flex flex-col justify-between group cursor-pointer shadow-md">
                     <div className="space-y-3">
                       <div className="w-10 h-10 rounded-xl bg-blue-500/15 border border-blue-500/30 flex items-center justify-center text-cyan-400">
@@ -210,7 +213,6 @@ export default function CareerToolsPage() {
                     </div>
                   </div>
 
-                  {/* Tool 2 */}
                   <div className="p-4 rounded-2xl bg-[#061224] border border-[#132c4e] hover:border-cyan-500/40 transition-all flex flex-col justify-between group cursor-pointer shadow-md">
                     <div className="space-y-3">
                       <div className="w-10 h-10 rounded-xl bg-purple-500/15 border border-purple-500/30 flex items-center justify-center text-purple-400">
@@ -232,7 +234,6 @@ export default function CareerToolsPage() {
                     </div>
                   </div>
 
-                  {/* Tool 3 */}
                   <div className="p-4 rounded-2xl bg-[#061224] border border-[#132c4e] hover:border-cyan-500/40 transition-all flex flex-col justify-between group cursor-pointer shadow-md">
                     <div className="space-y-3">
                       <div className="w-10 h-10 rounded-xl bg-indigo-500/15 border border-indigo-500/30 flex items-center justify-center text-indigo-400">
@@ -254,7 +255,6 @@ export default function CareerToolsPage() {
                     </div>
                   </div>
 
-                  {/* Tool 4 */}
                   <div className="p-4 rounded-2xl bg-[#061224] border border-[#132c4e] hover:border-cyan-500/40 transition-all flex flex-col justify-between group cursor-pointer shadow-md">
                     <div className="space-y-3">
                       <div className="w-10 h-10 rounded-xl bg-teal-500/15 border border-teal-500/30 flex items-center justify-center text-teal-400">
@@ -280,10 +280,8 @@ export default function CareerToolsPage() {
 
             </div>
 
-            {/* RIGHT COLUMN: Rocket Banner + Resume Analysis Score + Quick Tips + Recent Activity (approx 4 cols) */}
             <div className="lg:col-span-4 space-y-5">
               
-              {/* Card 1: Rocket Motivational Card */}
               <div className="p-5 rounded-2xl bg-gradient-to-r from-[#07172e] to-[#0a2347] border border-[#163354] flex items-center justify-between gap-4 shadow-lg group hover:border-cyan-500/40 transition-all">
                 <div className="flex items-center gap-3.5">
                   <div className="w-11 h-11 rounded-xl bg-cyan-500/20 border border-cyan-500/30 flex items-center justify-center text-cyan-400 shrink-0">
@@ -300,7 +298,6 @@ export default function CareerToolsPage() {
                 </div>
               </div>
 
-              {/* Card 2: Your Resume Analysis Widget */}
               <div className="p-5 rounded-2xl bg-[#061224] border border-[#132c4e] space-y-4 shadow-lg">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2 text-white font-bold text-xs">
@@ -313,13 +310,11 @@ export default function CareerToolsPage() {
                 </div>
 
                 <div className="flex items-center gap-5 pt-1">
-                  {/* Circular Gauge */}
                   <div className="relative w-20 h-20 rounded-full border-4 border-cyan-400 flex flex-col items-center justify-center bg-[#071933] shadow-lg shadow-cyan-500/20 shrink-0">
                     <span className="text-lg font-black text-white">{score}%</span>
                     <span className="text-[8px] uppercase font-bold text-slate-400">ATS Score</span>
                   </div>
 
-                  {/* Metrics list */}
                   <div className="space-y-1.5 flex-1 text-xs">
                     <div className="flex items-center justify-between">
                       <span className="flex items-center gap-1.5 text-slate-300">
@@ -355,7 +350,6 @@ export default function CareerToolsPage() {
                   </div>
                 </div>
 
-                {/* Recommendation Box */}
                 <div className="p-3 rounded-xl bg-[#091f3a] border border-cyan-500/20 flex items-start gap-2.5 text-xs text-slate-300">
                   <Lightbulb className="w-4 h-4 text-cyan-400 shrink-0 mt-0.5" />
                   <div>
@@ -365,49 +359,15 @@ export default function CareerToolsPage() {
                 </div>
               </div>
 
-              {/* Card 3: Quick Tips */}
-              <div className="p-5 rounded-2xl bg-[#061224] border border-[#132c4e] space-y-3 shadow-lg">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2 text-white font-bold text-xs">
-                    <Lightbulb className="w-4 h-4 text-cyan-400" />
-                    Quick Tips
-                  </div>
-                  <button className="text-[11px] text-cyan-400 hover:underline flex items-center gap-0.5">
-                    View Tips <ChevronRight className="w-3 h-3" />
-                  </button>
-                </div>
-
-                <div className="flex flex-wrap gap-2">
-                  {[
-                    "Add relevant keywords",
-                    "Use clean formatting",
-                    "Highlight key skills",
-                    "Keep it concise"
-                  ].map((tip) => (
-                    <span
-                      key={tip}
-                      className="px-3 py-1.5 rounded-xl bg-[#091b33] border border-[#153457] text-xs font-medium text-slate-300 hover:text-cyan-300 hover:border-cyan-500/40 cursor-pointer transition-all"
-                    >
-                      {tip}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              {/* Card 4: Recent Activity */}
               <div className="p-5 rounded-2xl bg-[#061224] border border-[#132c4e] space-y-3.5 shadow-lg">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2 text-white font-bold text-xs">
                     <Clock className="w-4 h-4 text-cyan-400" />
                     Recent Activity
                   </div>
-                  <button className="text-[11px] text-cyan-400 hover:underline flex items-center gap-0.5">
-                    View All <ChevronRight className="w-3 h-3" />
-                  </button>
                 </div>
 
                 <div className="space-y-3">
-                  {/* Activity 1 */}
                   <div className="flex items-start gap-3">
                     <div className="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 shrink-0">
                       <FileText className="w-4 h-4" />
@@ -419,7 +379,6 @@ export default function CareerToolsPage() {
                     </div>
                   </div>
 
-                  {/* Activity 2 */}
                   <div className="flex items-start gap-3">
                     <div className="w-8 h-8 rounded-lg bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400 shrink-0">
                       <Star className="w-4 h-4" />
@@ -428,30 +387,6 @@ export default function CareerToolsPage() {
                       <div className="text-xs font-bold text-white">New Skill Recommendation</div>
                       <div className="text-[11px] text-slate-400 leading-tight">You might want to learn System Design</div>
                       <div className="text-[10px] text-slate-500 mt-0.5">5 hours ago</div>
-                    </div>
-                  </div>
-
-                  {/* Activity 3 */}
-                  <div className="flex items-start gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 shrink-0">
-                      <Search className="w-4 h-4" />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <div className="text-xs font-bold text-white">ATS Tips Available</div>
-                      <div className="text-[11px] text-slate-400 leading-tight">View 5 tips to improve your resume</div>
-                      <div className="text-[10px] text-slate-500 mt-0.5">6 hours ago</div>
-                    </div>
-                  </div>
-
-                  {/* Activity 4 */}
-                  <div className="flex items-start gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 shrink-0">
-                      <UserCheck className="w-4 h-4" />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <div className="text-xs font-bold text-white">Profile Updated</div>
-                      <div className="text-[11px] text-slate-400 leading-tight">Your career profile is now more complete</div>
-                      <div className="text-[10px] text-slate-500 mt-0.5">1 day ago</div>
                     </div>
                   </div>
                 </div>

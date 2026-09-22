@@ -4,30 +4,12 @@ import Link from "next/link";
 import DashboardSidebar from "@/components/dashboard/Sidebar";
 import DashboardHeader from "@/components/dashboard/Header";
 import {
-  MapPin,
-  CheckCircle2,
-  Trophy,
-  BookOpen,
-  FolderOpen,
-  Briefcase,
-  Clock,
-  Star,
-  ArrowRight,
-  ChevronRight,
-  User,
-  Award,
-  Code2,
-  Sparkles,
-  TrendingUp,
-  FileText,
-  Lightbulb,
-  Rocket,
-  Users,
-  ShieldCheck,
-  Circle
+  MapPin, CheckCircle2, Trophy, BookOpen, FolderOpen,
+  Briefcase, Clock, Star, ArrowRight, ChevronRight, User,
+  Award, Code2, Sparkles, TrendingUp, FileText, Lightbulb,
+  Rocket, Users, ShieldCheck, Circle
 } from "lucide-react";
 
-/* ── Hexagonal SVG Badge matching Image 1 ── */
 function HexBadge({
   gradient,
   icon,
@@ -45,7 +27,6 @@ function HexBadge({
   return (
     <div className="flex flex-col items-center gap-2.5 group cursor-pointer text-center select-none p-2 rounded-xl hover:bg-[#061122]/60 transition">
       <div className="relative w-20 h-22 flex items-center justify-center">
-        {/* Hexagonal polygon SVG */}
         <svg viewBox="0 0 100 115" className="w-full h-full drop-shadow-xl overflow-visible">
           <defs>
             <linearGradient id={gradId} x1="0%" y1="0%" x2="100%" y2="100%">
@@ -66,7 +47,6 @@ function HexBadge({
           />
         </svg>
 
-        {/* Center icon */}
         <div className="absolute inset-0 flex items-center justify-center text-white drop-shadow-md">
           {icon}
         </div>
@@ -91,7 +71,7 @@ export default function StudentProfilePage() {
   const [activeTab, setActiveTab] = useState<"overview" | "badges" | "skills" | "projects" | "experience">("overview");
 
   const student = {
-    name: "Anjani Magre",
+    name: "Arjun Magre",
     initials: "AM",
     title: "Student • Pune",
     bio: "Learning today, building tomorrow.",
@@ -102,6 +82,8 @@ export default function StudentProfilePage() {
     projects: 3,
     internships: 2,
     profilePct: 78,
+    level: "Level 4 (Master Developer)",
+    points: 2450,
   };
 
   const badges = [
@@ -204,16 +186,13 @@ export default function StudentProfilePage() {
         <DashboardHeader />
 
         <main className="p-5 md:p-7 space-y-6 overflow-y-auto">
-          {/* ═══════════════════════════════════════════
-              1. MAIN PROFILE HEADER BANNER
-          ═══════════════════════════════════════════ */}
+          {/* 1. MAIN PROFILE HEADER BANNER */}
           <div
             className="relative rounded-2xl border border-[#142848] overflow-hidden shadow-2xl p-6 md:p-7"
             style={{
               background: "linear-gradient(135deg, #06132d 0%, #091c3d 45%, #05142f 100%)",
             }}
           >
-            {/* Background Mountain Skyline SVG & Stars */}
             <div className="absolute inset-0 pointer-events-none select-none overflow-hidden">
               <svg
                 viewBox="0 0 1000 200"
@@ -231,29 +210,10 @@ export default function StudentProfilePage() {
                   opacity="0.35"
                 />
               </svg>
-              <div className="absolute top-4 right-1/3 w-1.5 h-1.5 rounded-full bg-cyan-300 animate-ping opacity-60" />
-              <div className="absolute top-8 right-1/4 w-1 h-1 rounded-full bg-blue-200 opacity-75" />
             </div>
 
-            {/* Top Right Floating Badge */}
-            <div className="absolute top-4 right-5 hidden sm:flex items-center gap-2 bg-[#061936]/80 border border-blue-500/25 rounded-xl px-3 py-2 shadow-lg backdrop-blur-md">
-              <div className="text-right">
-                <p className="text-[10px] font-bold text-slate-300 leading-tight">
-                  Small steps<br />take you to<br />big dreams
-                </p>
-              </div>
-              <div className="flex flex-col items-center justify-center pl-1 border-l border-blue-500/30">
-                <Sparkles className="w-3.5 h-3.5 text-cyan-400 mb-0.5" />
-                <div className="text-base leading-none">🏔️</div>
-                <div className="text-[8px] text-cyan-400 font-bold">🚩</div>
-              </div>
-            </div>
-
-            {/* Banner Main Row: Avatar + Info + Stats */}
             <div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 pt-1">
-              {/* Left: Avatar & Info */}
               <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5">
-                {/* Circular Gradient Avatar */}
                 <div className="relative shrink-0">
                   <div
                     className="w-20 h-20 rounded-full flex items-center justify-center text-2xl font-black text-white shadow-2xl border-2 border-cyan-400/40"
@@ -263,13 +223,11 @@ export default function StudentProfilePage() {
                   >
                     {student.initials}
                   </div>
-                  {/* Green active status indicator */}
                   <div className="absolute bottom-0 right-0 w-5 h-5 bg-emerald-500 rounded-full border-2 border-[#06132d] flex items-center justify-center">
                     <div className="w-2 h-2 bg-white rounded-full" />
                   </div>
                 </div>
 
-                {/* Name, location, bio, skill tags */}
                 <div className="space-y-2">
                   <div className="flex items-center gap-3 flex-wrap">
                     <h1 className="text-xl md:text-2xl font-black text-white tracking-tight">
@@ -289,7 +247,6 @@ export default function StudentProfilePage() {
                     {student.bio}
                   </p>
 
-                  {/* Skill Badges */}
                   <div className="flex items-center gap-2 flex-wrap pt-1">
                     {student.skills.map((sk) => (
                       <span
@@ -309,7 +266,6 @@ export default function StudentProfilePage() {
                 </div>
               </div>
 
-              {/* Right: Quick Stats Row */}
               <div className="flex items-center gap-4 sm:gap-6 bg-[#040d20]/70 border border-[#102444] rounded-2xl px-5 py-3.5 shrink-0 self-stretch sm:self-auto justify-around sm:justify-start">
                 {stats.map((stat, i) => (
                   <React.Fragment key={stat.label}>
@@ -329,9 +285,29 @@ export default function StudentProfilePage() {
             </div>
           </div>
 
-          {/* ═══════════════════════════════════════════
-              2. TAB NAVIGATION ROW
-          ═══════════════════════════════════════════ */}
+          {/* Gamification Level Progress */}
+          <div className="p-6 rounded-2xl bg-gradient-to-r from-cyan-950/60 via-slate-900 to-indigo-950/60 border border-cyan-500/30 shadow-xl space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <span className="text-xs font-bold uppercase text-cyan-400">Gamification Progression</span>
+                <h3 className="text-lg font-bold text-white">{student.level}</h3>
+              </div>
+              <div className="text-right">
+                <span className="text-xs text-slate-400">Total Skill Balance</span>
+                <div className="text-xl font-black text-amber-400">🪙 {student.points.toLocaleString()} Skill Coins</div>
+              </div>
+            </div>
+
+            <div className="w-full bg-slate-800 rounded-full h-3">
+              <div className="bg-gradient-to-r from-cyan-500 via-indigo-500 to-amber-400 h-3 rounded-full" style={{ width: "75%" }} />
+            </div>
+            <div className="flex justify-between text-xs text-slate-400">
+              <span>Current Level 4 (1,250 Skill Coins)</span>
+              <span>Level 5 Master (1,500 Skill Coins Needed)</span>
+            </div>
+          </div>
+
+          {/* 2. TAB NAVIGATION ROW */}
           <div className="flex items-center gap-1.5 p-1 rounded-xl bg-[#071324] border border-[#112642] w-fit">
             {tabs.map((tab) => (
               <button
@@ -349,17 +325,12 @@ export default function StudentProfilePage() {
             ))}
           </div>
 
-          {/* ═══════════════════════════════════════════
-              3. MAIN TWO-COLUMN CONTENT GRID
-          ═══════════════════════════════════════════ */}
+          {/* 3. MAIN TWO-COLUMN CONTENT GRID */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-            {/* ──────────────────────────────────────────
-                LEFT COLUMN (2/3 width)
-            ────────────────────────────────────────── */}
             <div className="lg:col-span-2 space-y-6">
 
-              {/* ── My Badges Card ── */}
+              {/* My Badges Card */}
               <div className="rounded-2xl bg-[#071324] border border-[#112642] p-5 md:p-6 space-y-5">
                 <div className="flex items-center justify-between">
                   <div>
@@ -373,16 +344,8 @@ export default function StudentProfilePage() {
                       Showcase your achievements and skills earned.
                     </p>
                   </div>
-
-                  <Link
-                    href="/dashboard/student/profile"
-                    className="flex items-center gap-1.5 text-xs font-bold text-cyan-300 hover:text-cyan-200 transition px-3 py-1.5 rounded-lg bg-[#0c2448] border border-cyan-500/30 hover:bg-[#102d59]"
-                  >
-                    View All Badges <ArrowRight className="w-3.5 h-3.5" />
-                  </Link>
                 </div>
 
-                {/* 5 Hexagonal Badges Row */}
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 pt-2">
                   {badges.map((badge) => (
                     <HexBadge key={badge.label} {...badge} />
@@ -390,10 +353,9 @@ export default function StudentProfilePage() {
                 </div>
               </div>
 
-              {/* ── Profile Completion Card ── */}
+              {/* Profile Completion Card */}
               <div className="rounded-2xl bg-[#071324] border border-[#112642] p-6 md:p-7">
                 <div className="flex flex-col sm:flex-row items-center gap-8">
-                  {/* Circular Progress Gauge */}
                   <div className="relative w-32 h-32 shrink-0">
                     <svg viewBox="0 0 100 100" className="w-full h-full -rotate-90">
                       <defs>
@@ -426,7 +388,6 @@ export default function StudentProfilePage() {
                     </div>
                   </div>
 
-                  {/* Checklist & CTA */}
                   <div className="flex-1 space-y-4 text-center sm:text-left">
                     <div>
                       <h3 className="text-sm md:text-base font-black text-white">Profile Completion</h3>
@@ -468,24 +429,15 @@ export default function StudentProfilePage() {
 
             </div>
 
-            {/* ──────────────────────────────────────────
-                RIGHT COLUMN (1/3 width)
-            ────────────────────────────────────────── */}
             <div className="space-y-6">
 
-              {/* ── Recent Activity Card ── */}
+              {/* Recent Activity Card */}
               <div className="rounded-2xl bg-[#071324] border border-[#112642] p-5 space-y-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <Clock className="w-4 h-4 text-cyan-400" />
                     <h3 className="text-sm font-black text-white">Recent Activity</h3>
                   </div>
-                  <Link
-                    href="#"
-                    className="text-xs font-bold text-cyan-400 hover:text-cyan-300 flex items-center gap-1 transition"
-                  >
-                    View All <ArrowRight className="w-3 h-3" />
-                  </Link>
                 </div>
 
                 <div className="space-y-3 pt-1">
@@ -515,27 +467,13 @@ export default function StudentProfilePage() {
                 </div>
               </div>
 
-              {/* ── Keep Going! Card ── */}
+              {/* Keep Going! Card */}
               <div
                 className="rounded-2xl border border-[#142848] p-5 space-y-3 relative overflow-hidden shadow-xl"
                 style={{
                   background: "linear-gradient(135deg, #05142e 0%, #091e3d 50%, #05132d 100%)",
                 }}
               >
-                {/* Background mountain peak SVG */}
-                <div className="absolute inset-0 pointer-events-none select-none opacity-30">
-                  <svg
-                    viewBox="0 0 400 200"
-                    preserveAspectRatio="none"
-                    className="absolute bottom-0 right-0 w-full h-full"
-                  >
-                    <polygon
-                      points="120,200 260,60 340,140 400,80 400,200"
-                      fill="#3b82f6"
-                    />
-                  </svg>
-                </div>
-
                 <div className="relative z-10 flex items-start gap-3">
                   <div className="w-10 h-10 rounded-full bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 shrink-0">
                     <Trophy className="w-5 h-5" />
@@ -548,7 +486,6 @@ export default function StudentProfilePage() {
                   </div>
                 </div>
 
-                {/* Mountain illustration with flag and right button */}
                 <div className="relative z-10 flex items-end justify-between pt-2">
                   <div className="space-y-1">
                     <div className="flex items-center gap-1.5">

@@ -38,7 +38,8 @@ export interface StudentProfile {
   target_role?: string;
   placement_readiness: number;
   talent_iq: number;
-  nexa_points: number;
+  skill_coins: number;
+  nexa_points?: number;
   streak_days: number;
   last_activity_date?: string;
   is_premium: boolean;

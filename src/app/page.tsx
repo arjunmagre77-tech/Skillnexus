@@ -22,7 +22,7 @@ const features = [
   { icon: TrendingUp, title: "Personalized Career Roadmap", desc: "Get a custom learning path from your current state to your target role with resource recommendations.", color: "#10B981" },
   { icon: Briefcase, title: "AI Internship Matching", desc: "See your match score for every internship with detailed skill-by-skill breakdown.", color: "#F59E0B" },
   { icon: BarChart3, title: "Placement Readiness Score", desc: "A comprehensive 100-point score across technical skills, projects, communication, and interview readiness.", color: "#EF4444" },
-  { icon: Trophy, title: "Gamified Learning", desc: "Maintain streaks, earn NexaPoints, unlock badges, and climb leaderboards as you grow your skills.", color: "#D97706" },
+  { icon: Trophy, title: "Gamified Learning", desc: "Maintain streaks, earn Skill Coins (🪙), unlock badges, and climb leaderboards as you grow your skills.", color: "#D97706" },
 ];
 
 const testimonials = [
@@ -39,7 +39,7 @@ const pricingPlans = [
   },
   {
     name: "Premium", price: "₹199", period: "per month",
-    features: ["Advanced AI Skill Analysis", "Unlimited AI Career Assistant", "Advanced Resume Analyzer", "Unlimited Mock Interviews", "Advanced InternshipMatching", "CareerPilot + SkillPilot", "Premium Learning Resources", "Detailed Placement Insights", "Priority Support"],
+    features: ["Advanced AI Skill Analysis", "Unlimited AI Career Assistant", "Advanced Resume Analyzer", "Unlimited Mock Interviews", "Advanced Internship Matching", "CareerPilot + SkillPilot", "Premium Learning Resources", "Detailed Placement Insights", "Priority Support"],
     cta: "Start Premium", highlight: true, badge: "Most Popular",
   },
 ];
@@ -47,7 +47,7 @@ const pricingPlans = [
 const faqs = [
   { q: "How does the Skill Gap Analysis work?", a: "SkillLink compares your self-declared and assessed skills against the requirements of real job postings and internships you're targeting, then generates a prioritized gap report with recommended actions." },
   { q: "What is the Placement Readiness Score?", a: "It's a composite score out of 100 calculated across 7 dimensions: Technical Skills, Projects, Internships, Communication, Problem Solving, Resume Quality, and Interview Readiness." },
-  { q: "Can I use NexaPoints to pay for Premium?", a: "Yes! NexaPoints can reduce your Premium cost. 500 points = ₹50 off, 1000 points = ₹100 off, and 2000 points = free Premium for one month. Points have no cash value." },
+  { q: "Can I use Skill Coins to pay for Premium?", a: "Yes! Skill Coins can reduce your Premium cost. 500 coins = ₹50 off, 1000 coins = ₹100 off, and 2000 coins = free Premium for one month." },
   { q: "How are skills verified?", a: "Skills go through 3 verification levels: Self-Declared (you claim it), Assessed (you pass our platform test), and Industry-Verified (a company or mentor confirms it from real work)." },
   { q: "Is SkillLink free for colleges?", a: "Yes! College admin dashboards including skill analytics, department heatmaps, and placement tracking are completely free. Enterprise plans are available for advanced features." },
 ];
@@ -386,11 +386,11 @@ export default function LandingPage() {
                 <span className="text-gradient">Winning</span>
               </h2>
               <p style={{ color: "var(--text-muted)", lineHeight: 1.7, marginBottom: "2rem" }}>
-                Career growth shouldn't feel like a chore. SkillLink rewards meaningful learning activity with NexaPoints, streaks, and badges — not just logging in.
+                Career growth shouldn't feel like a chore. SkillLink rewards meaningful learning activity with Skill Coins (🪙), streaks, and badges — not just logging in.
               </p>
               {[
                 { icon: "🔥", title: "Daily Streaks", desc: "Maintain your streak by completing real learning tasks" },
-                { icon: "⭐", title: "NexaPoints", desc: "Earn points for assessments, projects, and verifications" },
+                { icon: "🪙", title: "Skill Coins", desc: "Earn coins for assessments, projects, and verifications" },
                 { icon: "🏆", title: "Badges", desc: "Unlock achievement badges that appear on your profile" },
                 { icon: "👑", title: "Leaderboard", desc: "Compete with peers in your college and department" },
               ].map(g => (
@@ -414,7 +414,7 @@ export default function LandingPage() {
                   <span style={{ fontWeight: 700, color: "#EF4444", fontSize: "0.9rem" }}>12 Day Streak</span>
                 </div>
               </div>
-              <div className="nexa-badge" style={{ marginBottom: "1.5rem", width: "fit-content" }}>⭐ 2,450 NexaPoints</div>
+              <div className="skill-coins-badge" style={{ marginBottom: "1.5rem", width: "fit-content" }}>🪙 2,450 Skill Coins</div>
               <div style={{ marginBottom: "1.5rem" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
                   <span style={{ fontSize: "0.875rem" }}>Placement Readiness</span>

@@ -57,20 +57,85 @@
 
 /* Light mode overrides */
 .light {
-  --primary: #FFFFFF;
-  --primary-light: #F3F4F6;
+  --primary: #F8FAFC;
+  --primary-light: #F1F5F9;
+  --primary-mid: #E2E8F0;
   --surface: #FFFFFF;
-  --surface-2: #F9FAFB;
-  --surface-3: #F3F4F6;
-  --card-bg: rgba(255,255,255,0.9);
-  --card-border: rgba(0,0,0,0.08);
-  --text: #111827;
-  --text-muted: #6B7280;
-  --text-subtle: #9CA3AF;
-  --shadow-sm: 0 2px 8px rgba(0,0,0,0.08);
-  --shadow-md: 0 4px 20px rgba(0,0,0,0.12);
-  --shadow-card: 0 4px 24px rgba(0,0,0,0.1);
+  --surface-2: #F8FAFC;
+  --surface-3: #F1F5F9;
+  --card-bg: #FFFFFF;
+  --card-border: #E2E8F0;
+  --text: #0F172A;
+  --text-muted: #475569;
+  --text-subtle: #64748B;
+  --shadow-sm: 0 2px 8px rgba(15,23,42,0.06);
+  --shadow-md: 0 4px 20px rgba(15,23,42,0.08);
+  --shadow-card: 0 4px 24px rgba(15,23,42,0.06);
 }
+
+/* Global Light Theme Utility Overrides for dark-hardcoded components */
+html.light body,
+html.light main {
+  background-color: #F8FAFC !important;
+  color: #0F172A !important;
+}
+
+html.light aside,
+html.light header,
+html.light nav {
+  background-color: #FFFFFF !important;
+  border-color: #E2E8F0 !important;
+  color: #0F172A !important;
+}
+
+html.light .bg-\[\#050c18\],
+html.light .bg-\[\#060911\],
+html.light .bg-\[\#071126\],
+html.light .bg-\[\#081526\],
+html.light .bg-\[\#081528\],
+html.light .bg-\[\#091022\],
+html.light .bg-\[\#091526\],
+html.light .bg-\[\#0a1228\],
+html.light .bg-\[\#0d162d\],
+html.light .bg-\[\#0b2240\],
+html.light .bg-slate-900,
+html.light .bg-slate-950,
+html.light .bg-slate-900\/90,
+html.light .bg-slate-950\/80 {
+  background-color: #FFFFFF !important;
+  border-color: #E2E8F0 !important;
+}
+
+html.light .border-\[\#12233b\],
+html.light .border-\[\#14263f\],
+html.light .border-\[\#172c47\],
+html.light .border-slate-800,
+html.light .border-slate-800\/80,
+html.light .border-slate-900,
+html.light .border-blue-900\/60 {
+  border-color: #E2E8F0 !important;
+}
+
+html.light .text-slate-100,
+html.light .text-slate-200,
+html.light .text-slate-300,
+html.light .text-white {
+  color: #0F172A !important;
+}
+
+html.light .text-slate-400,
+html.light .text-slate-500 {
+  color: #475569 !important;
+}
+
+html.light input,
+html.light select,
+html.light textarea {
+  background-color: #F1F5F9 !important;
+  color: #0F172A !important;
+  border-color: #CBD5E1 !important;
+}
+
 
 /* ─── Base Styles ───────────────────────────────────────────────────────────── */
 * {
@@ -607,7 +672,8 @@ h1, h2, h3, h4, h5, h6 {
   animation: pulse 2s infinite;
 }
 
-/* ─── NexaPoints Badge ──────────────────────────────────────────────────────── */
+/* ─── Skill Coins Badge ──────────────────────────────────────────────────────── */
+.skill-coins-badge,
 .nexa-badge {
   display: inline-flex;
   align-items: center;

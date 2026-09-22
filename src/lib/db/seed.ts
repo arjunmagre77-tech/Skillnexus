@@ -41,18 +41,18 @@ export async function seedDatabase() {
 
   // ─── BADGES ────────────────────────────────────────────────────────────────
   db.badges.push(
-    { id: 'b1',  name: 'First Assessment',   description: 'Completed first skill assessment',      icon: '🏆', color: '#F59E0B' },
-    { id: 'b2',  name: '7 Day Streak',        description: 'Maintained a 7-day learning streak',   icon: '🔥', color: '#EF4444' },
-    { id: 'b3',  name: '30 Day Streak',       description: 'Maintained a 30-day learning streak',  icon: '🔥', color: '#DC2626' },
-    { id: 'b4',  name: 'First Project',       description: 'Added your first project',              icon: '💻', color: '#3B82F6' },
-    { id: 'b5',  name: 'Placement Ready',     description: 'Reached 80+ placement readiness',      icon: '🎯', color: '#10B981' },
-    { id: 'b6',  name: 'Internship Ready',    description: 'Applied for your first internship',     icon: '🚀', color: '#8B5CF6' },
-    { id: 'b7',  name: '5 Verified Skills',   description: 'Got 5 skills industry-verified',        icon: '⭐', color: '#F59E0B' },
-    { id: 'b8',  name: 'Industry Connected',  description: 'Connected with an industry partner',    icon: '🏢', color: '#0EA5E9' },
-    { id: 'b9',  name: 'Skill Master',        description: 'Reached advanced level in 3 skills',   icon: '🧠', color: '#6366F1' },
-    { id: 'b10', name: 'Industry Champion',   description: 'Completed an industry project',         icon: '🏆', color: '#D97706' },
-    { id: 'b11', name: '100 Day Streak',      description: 'Maintained a 100-day learning streak',  icon: '🔥', color: '#B91C1C' },
-    { id: 'b12', name: 'Top Performer',       description: 'Ranked top 10 on leaderboard',          icon: '👑', color: '#FBBF24' },
+    { id: 'b1',  name: 'First Assessment',   description: 'Completed your first verified skill assessment', icon: '🏆', color: '#F59E0B' },
+    { id: 'b2',  name: '7 Day Streak',        description: 'Maintained a 7-day learning streak',             icon: '🔥', color: '#EF4444' },
+    { id: 'b3',  name: '30 Day Streak',       description: 'Maintained a 30-day learning streak',            icon: '🔥', color: '#DC2626' },
+    { id: 'b4',  name: 'First Project',       description: 'Built & published your first project',           icon: '💻', color: '#3B82F6' },
+    { id: 'b5',  name: 'Placement Ready',     description: 'Reached 80+ Placement Readiness Score',          icon: '🎯', color: '#10B981' },
+    { id: 'b6',  name: 'Internship Ready',    description: 'Applied for your first industry internship',     icon: '🚀', color: '#8B5CF6' },
+    { id: 'b7',  name: '5 Verified Skills',   description: 'Got 5 skills verified via test or certificate', icon: '⭐', color: '#F59E0B' },
+    { id: 'b8',  name: 'Industry Partner',    description: 'Connected with an industry partner',             icon: '🏢', color: '#0EA5E9' },
+    { id: 'b9',  name: 'Skill Master',        description: 'Reached advanced proficiency level in 3 skills', icon: '🧠', color: '#6366F1' },
+    { id: 'b10', name: 'Project Champion',    description: 'Completed an industry project benchmark',        icon: '👑', color: '#D97706' },
+    { id: 'b11', name: 'Certified Pro',       description: 'Uploaded a verified industry certificate',       icon: '📜', color: '#10B981' },
+    { id: 'b12', name: 'Career Milestone',    description: 'Selected for an internship program',             icon: '🎓', color: '#8B5CF6' },
   );
 
   // ─── CAREER PATHS ──────────────────────────────────────────────────────────
@@ -165,7 +165,7 @@ export async function seedDatabase() {
     location: 'Karnataka', bio: 'Aspiring Full Stack Developer passionate about building impactful products.',
     linkedin_url: 'https://linkedin.com/in/arjunsharma', github_url: 'https://github.com/arjunsharma',
     career_goal: 'Full Stack Developer', target_role: 'Full Stack Developer',
-    placement_readiness: 82, talent_iq: 84, nexa_points: 2450, streak_days: 12,
+    placement_readiness: 82, talent_iq: 84, skill_coins: 2450, nexa_points: 2450, streak_days: 12,
     last_activity_date: new Date().toISOString().split('T')[0],
     is_premium: false, is_public: true, created_at: now,
   });
@@ -272,7 +272,7 @@ export async function seedDatabase() {
       id: pid, user_id: uid, college_id: collegeProfileId, department: s.dept,
       year_of_study: s.yr, graduation_year: s.grad, gpa: s.gpa,
       career_goal: s.goal, target_role: s.goal, placement_readiness: s.readiness,
-      talent_iq: s.iq, nexa_points: s.pts, streak_days: s.streak,
+      talent_iq: s.iq, skill_coins: s.pts, nexa_points: s.pts, streak_days: s.streak,
       is_premium: false, is_public: true, created_at: now,
     });
     for (const sk of s.skills) {
